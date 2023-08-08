@@ -17,18 +17,22 @@
             <label class="search-bar__label" for="search-bar"></label>
             <input class="search-bar__input" type="text" id="search-bar" name="search-bar"
                 placeholder="Rechercher une recette, un ingrédient,...">
-            <button class="search-bar__submit" type="submit"><img src="/assets/images/search.svg"
-                    alt="Icone loupe"></button>
+            <button class="search-bar__submit" type="submit"><img src="/assets/images/search.svg" alt="Icone loupe"></button>
         </form>
     </header>
-    <main></main>
+    <main>
+        <div id="recipes-container" class="recipes-container"></div>
+
+    </main>
     <footer></footer>
 
 
 
 
-    <script src="scripts/models/Recipe.js"></script>
+    <script src="scripts/models/RecipeModel.js"></script>
+    <script src="scripts/models/IngredientModel.js"></script>
     <script src="/scripts/pages/recipePage.js"></script>
+    <script src="/scripts/utils/cardsStyleUtils.js"></script>
     <script src="/scripts/utils/fetchUtil.js"></script>
     <script src="/scripts/utils/recipeUtil.js"></script>
 
