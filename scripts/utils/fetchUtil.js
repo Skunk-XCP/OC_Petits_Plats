@@ -6,8 +6,11 @@ async function getRecipes() {
 }
 
 async function init() {
-    displayRecipes();
+    await displayRecipes();
 
+    displayFilter("ingredients", "filters-container");
+    displayFilter("ustensils", "filters-container");
+    displayFilter("appliance", "filters-container");
 }
 
 init();

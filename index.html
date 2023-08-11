@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png"/>
+    <script src="https://kit.fontawesome.com/133c6e54a0.js" crossorigin="anonymous"></script>
     <title>Petits Plats</title>
 </head>
 
@@ -17,24 +18,25 @@
             <label class="search-bar__label" for="search-bar"></label>
             <input class="search-bar__input" type="text" id="search-bar" name="search-bar"
                 placeholder="Rechercher une recette, un ingrédient,...">
-            <button class="search-bar__submit" type="submit"><img src="/assets/images/search.svg" alt="Icone loupe"></button>
+            <button class="search-bar__submit" type="button"><img src="/assets/images/search.svg" alt="Icone loupe"></button>
         </form>
     </header>
     <main>
-        <div id="recipes-container" class="recipes-container"></div>
+        <section id="filters-container" class="filters-container"></section>
+        <section id="recipes-container" class="recipes-container"></section>
 
     </main>
-    <footer></footer>
 
 
-
-
+    
     <script src="scripts/models/RecipeModel.js"></script>
     <script src="scripts/models/IngredientModel.js"></script>
     <script src="/scripts/pages/recipePage.js"></script>
     <script src="/scripts/utils/cardsStyleUtils.js"></script>
+    <script src="/scripts/utils/filterUtil.js"></script>
     <script src="/scripts/utils/fetchUtil.js"></script>
     <script src="/scripts/utils/recipeUtil.js"></script>
+    <script src="/scripts/utils/searchUtil.js"></script>
 
 </body>
 
