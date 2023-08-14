@@ -24,6 +24,7 @@ async function displayRecipes() {
 const inputSearch = document.querySelector("#search-bar");
 inputSearch.addEventListener('input', handleSearchInput);
 
+
 // Gère la saisie dans la barre de recherche pour filtrer les recettes
 function handleSearchInput(event) {
     // Récupère la valeur saisie par l'utilisateur
@@ -105,3 +106,4 @@ function updateRecipeCountSpan(count) {
     const word = count > 1 ? 'recettes' : 'recette';
     countSpan.textContent = `${count} ${word}`;
 }
+
