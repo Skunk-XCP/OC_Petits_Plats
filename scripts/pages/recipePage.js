@@ -30,13 +30,10 @@ function handleSearchInput(event) {
     // Récupère la valeur saisie par l'utilisateur
     const query = event.target.value;
     let recipesToShow;
-    if (query.length >= 3) {
-        // Filtre les recettes en fonction de la requête
-        recipesToShow = filterRecipes(query, allRecipes);
-    } else {
-        // Si la requête contient moins de 3 caractères, affiche toutes les recettes
-        recipesToShow = allRecipes;
-    }
+
+    // Filtre les recettes en fonction de la requête
+    // Si la requête contient moins de 3 caractères, affiche toutes les recettes
+    recipesToShow = (query.length >= 3) ? filterRecipes(query, allRecipes) : allRecipes;
 
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length); 
@@ -55,23 +52,9 @@ function updateRecipesDisplay(recipes) {
     }
 }
 
-const translations = {
-    "ingredients": "Ingrédients",
-    "utensils": "Ustensiles",
-    "appliance": "Appareil"
-};
-
-function displayFilter(type, target) {
+function displayFilter(type) {
     // Si target = string, considérer comme un ID élément et récupérer l'élément réel
-    if (typeof target === 'string') {
-        target = document.getElementById(target);
-    }
-
-    if (!target) {
-        console.error("Élément cible non trouvé pour insérer le filtre");
-        return;
-    }
-
+    target = document.getElementById("filters-container");
     target.innerHTML += filter(type);
 }
 

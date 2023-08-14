@@ -1,3 +1,9 @@
+const translations = {
+    "ingredients": "Ingrédients",
+    "utensils": "Ustensiles",
+    "appliance": "Appareil"
+};
+
 function filter(type) {
     const translatedType = translations[type] || type;
     return `

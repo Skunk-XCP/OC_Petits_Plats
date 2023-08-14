@@ -98,13 +98,14 @@
 }
 
 .recipe_content {
-    padding: 30px;
+    padding: 0 30px;
 }
 
 .recipe_title {
     font-family: "Anton", sans-serif;
     font-size: 1.2em;
     margin-bottom: 20px;
+
 }
 
 .description_title, .ingredients_list {
@@ -112,6 +113,7 @@
     margin-bottom: 20px;
     text-transform: uppercase;
     color: #7A7A7A;
+
 }
 
 .recipe_description {

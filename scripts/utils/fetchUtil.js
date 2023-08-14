@@ -1,3 +1,5 @@
+const filters = ["ingredients", "ustensils", "appliance"]
+
 async function getRecipes() {
     const response = await fetch("../data/recipes.json");
     const data = await response.json();
@@ -8,9 +10,7 @@ async function getRecipes() {
 async function init() {
     await displayRecipes();
 
-    displayFilter("ingredients", "filters-container");
-    displayFilter("ustensils", "filters-container");
-    displayFilter("appliance", "filters-container");
+    filters.forEach(filter => displayFilter(filter))
 }
 
 init();
