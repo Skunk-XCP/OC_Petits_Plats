@@ -52,11 +52,14 @@ function updateRecipesDisplay(recipes) {
     }
 }
 
-function displayFilter(type) {
-    // Si target = string, considérer comme un ID élément et récupérer l'élément réel
-    target = document.getElementById("filters-container");
-    target.innerHTML += filter(type);
+async function displayFilter(type) {
+    const items = await getUniqueItems(type);
+    const filterHTML = filter(type, items);
+    const target = document.getElementById("filters-container");
+    target.insertAdjacentHTML('beforeend', filterHTML);
 }
+
+
 
 // Initialiser la span qui affiche le compte des recettes
 function initializeRecipeCountSpan() {
@@ -89,4 +92,3 @@ function updateRecipeCountSpan(count) {
     const word = count > 1 ? 'recettes' : 'recette';
     countSpan.textContent = `${count} ${word}`;
 }
-
