@@ -20,41 +20,33 @@ async function displayRecipes() {
     updateRecipeCountSpan(allRecipes.length);
 }
 
-
-const inputSearch = document.querySelector("#search-bar");
-inputSearch.addEventListener('input', handleSearchInput);
-
-
-// Gère la saisie dans la barre de recherche pour filtrer les recettes
-function handleSearchInput(event) {
-    // Récupère la valeur saisie par l'utilisateur
-    const query = event.target.value;
-    let recipesToShow;
-
-    // Filtre les recettes en fonction de la requête
-    // Si la requête contient moins de 3 caractères, affiche toutes les recettes
-    recipesToShow = (query.length >= 3) ? filterRecipes(query, allRecipes) : allRecipes;
-
-    updateRecipesDisplay(recipesToShow);
-    updateRecipeCountSpan(recipesToShow.length); 
-}
-
 // Met à jour l'affichage des recettes sur la page
 function updateRecipesDisplay(recipes) {
     // Sélectionne le conteneur des recettes
     const recipesContainer = document.getElementById('recipes-container');
     // Vide le conteneur des recettes
     recipesContainer.innerHTML = ''; 
-    // Parcourt chaque recette et l'ajoute au conteneur
-    for (const recipe of recipes) {
-        const recipeElement = createRecipeElement(recipe);
-        recipesContainer.appendChild(recipeElement);
+
+    if (recipes.length === 0) {
+        const noResultsMessage = document.createElement('p');
+        noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
+        recipesContainer.appendChild(noResultsMessage);
+        
+        // Ajoute la classe CSS pour le mode "Aucun résultat"
+        recipesContainer.classList.add('no-results');
+    } else {
+        // Si des recettes sont trouvées, retire la classe CSS pour le mode "Aucun résultat"
+        recipesContainer.classList.remove('no-results');
+
+        for (const recipe of recipes) {
+            const recipeElement = createRecipeElement(recipe);
+            recipesContainer.appendChild(recipeElement);
+        }
     }
 }
 
 async function displayFilter(type) {
-    const items = await getUniqueItems(type);
-    const filterHTML = filter(type, items);
+    const filterHTML = filter(type);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
 }

@@ -18,7 +18,10 @@
             <label class="search-bar__label" for="search-bar"></label>
             <input class="search-bar__input" type="text" id="search-bar" name="search-bar"
                 placeholder="Rechercher une recette, un ingrédient,...">
-            <button class="search-bar__submit" id="searchButton" type="button"><img src="/assets/images/search.svg" alt="Icone loupe"></button>
+            <button class="search-bar__erase hidden" id="eraseButton" type="button">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img class="search-bar__magnifying-glass" src="/assets/images/search.svg" alt="Icone loupe">
         </form>
     </header>
     <main>
@@ -30,8 +33,9 @@
 
     
     <script src="scripts/models/RecipeModel.js"></script>
+    <script src="scripts/models/SearchBarModel.js"></script>
     <script src="scripts/models/IngredientModel.js"></script>
-    <script src="scripts/models/filterModel.js"></script>
+    <script src="scripts/models/TagFiltersModel.js"></script>
     <script src="/scripts/pages/recipePage.js"></script>
     <script src="/scripts/utils/cardsStyleUtils.js"></script>
     <script src="/scripts/utils/filterUtil.js"></script>
