@@ -49,6 +49,15 @@ async function displayFilter(type) {
     const filterHTML = filter(type);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
+
+    // Ajout de l'écouteur d'événement ici
+    const toggleButton = target.querySelector('.toggle');
+    if (toggleButton) {
+        toggleButton.addEventListener('click', function() {
+            const type = this.previousElementSibling.id;
+            toggleFilterHeight(type);
+        });
+    }
 }
 
 
@@ -83,4 +92,16 @@ function updateRecipeCountSpan(count) {
 
     const word = count > 1 ? 'recettes' : 'recette';
     countSpan.textContent = `${count} ${word}`;
+}
+
+
+
+function filterButtonsLists(type, list) {
+    const ulElement = document.getElementById(`${type}_list`);
+    
+    for (const item of list) {
+        const listItem = document.createElement('li');
+        listItem.textContent = item;
+        ulElement.appendChild(listItem);
+    }
 }

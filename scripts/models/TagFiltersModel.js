@@ -3,34 +3,54 @@ class TagFilters {
         this.recipes = recipes;
     }
 
+    // filteredIngredients() {
+    //     let allIngredients = [];
+    //     let uniqueIngredient;
+    //     for (let i = 0 ; i < this.recipes.length ; i++) {
+    //         for (let j = 0; j < this.recipes[i].ingredients.length; j++) {
+    //             allIngredients.push(this.recipes[i].ingredients[j].ingredient)
+    //             uniqueIngredient = [... new Set(allIngredients)]
+    //         }
+    //     }
+    //     console.log(uniqueIngredient);
+    //     console.log(allIngredients);
+
+    // }
+
+
+
     filteredIngredients() {
-        let allIngredients = [];
-        let uniqueIngredient;
-        for (let i = 0 ; i < this.recipes.length ; i++) {
-            for (let j = 0; j < this.recipes[i].ingredients.length; j++) {
-                allIngredients.push(this.recipes[i].ingredients[j].ingredient)
-                uniqueIngredient = [... new Set(allIngredients)]
-            }
-        }
+        // Utiliser flatMap pour obtenir tous les ingrédients
+        const allIngredients = this.recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient));
+        // Éliminer les doublons avec Set
+        const uniqueIngredientsSet = new Set(allIngredients);
+        
+        // Convertir le Set en tableau
+        const uniqueIngredientsArray = [...uniqueIngredientsSet];
+        
+        return uniqueIngredientsArray;
     }
+    
 
     filteredAppliance() {
-        let allAppliances = [];
-        let uniqueAppliance;
-            for (let i = 0; i < this.recipes.length; i++) {
-                allAppliances.push(this.recipes[i].appliance)
-                uniqueAppliance = [... new Set(allAppliances)]
-            }
+        const allAppliances = this.recipes.map(recipe => recipe.appliance);
+        
+        const uniqueAppliancesSet = new Set(allAppliances);
+        
+        const uniqueAppliancesArray = [...uniqueAppliancesSet];
+        
+        return uniqueAppliancesArray;
     }
 
     filteredUstensils() {
-        let allUstensils = [];
-        let uniqueUstensil;
-        for (let i = 0 ; i < this.recipes.length ; i++) {
-            for (let j = 0; j < this.recipes[i].ustensils.length; j++) {
-                allUstensils.push(this.recipes[i].ustensils[j])
-                uniqueUstensil = [... new Set(allUstensils)]
-            }
-        }
+        const allUstensils = this.recipes.flatMap(recipe => recipe.ustensils);
+
+        const uniqueUstensilsSet = new Set(allUstensils);
+        
+        const uniqueUstensilsArray = [...uniqueUstensilsSet];
+        
+        return uniqueUstensilsArray;
     }
+    
 }
+

@@ -1,7 +1,5 @@
 const filters = ["ingredients", "ustensils", "appliance"]
 
-const filterMethods = ['filteredIngredients', 'filteredAppliance', 'filteredUstensils'
-];
 
 
 async function getRecipes() {
@@ -11,20 +9,24 @@ async function getRecipes() {
     return recipes;
 }
 
+
 function init() {
     getRecipes()
     .then((recipes) => {
         displayRecipes(recipes);
-        filters.forEach(filter => displayFilter(filter))
+        filters.forEach(filter => displayFilter(filter));
 
         const tagFilter = new TagFilters(recipes);
-        for (const method of filterMethods) {
-            tagFilter[method]();
-        }
+
+        const ingredientList = tagFilter.filteredIngredients();
+        const applianceList = tagFilter.filteredAppliance();
+        const utensilList = tagFilter.filteredUstensils();
+
+        filterButtonsLists("ingredients", ingredientList);
+        filterButtonsLists("appliance", applianceList);
+        filterButtonsLists("ustensils", utensilList);
     })
-
-
-    
 }
+
 
 init();

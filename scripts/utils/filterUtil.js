@@ -12,10 +12,12 @@ function filter(type, items = []) {
         <div id="${type}_filter" class="filterBox">
             <input type="text" id="${type}" value="${translatedType}" class="inputField">
             <label for="${type}"></label>
-            <button class="toggle" onclick="toggleFilterHeight('${type}')"><i class="fa-solid fa-chevron-down"></i></button>
-            <ul id="${type}_list">
+            <button class="toggle"><i class="fa-solid fa-chevron-down"></i></button>
+            <ul id="${type}_list" class="type_list">
                 ${listItems}
             </ul>
         </div>
     `;
 }
+
+

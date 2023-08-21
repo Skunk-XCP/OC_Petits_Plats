@@ -241,7 +241,7 @@
 .toggle {
     position: absolute;
     right: 10px;
-    top: 50%;
+    top: 22px;
     transform: translateY(-50%); 
     background-color: transparent;
     border: none;
@@ -250,22 +250,21 @@
 }
 
 .filterBox ul {
-    /* display: block; */
-    max-height: 0;
+    height: 150px;
+    padding: 2%;
+
     overflow: hidden;
     transition: max-height 0.3s ease-out;
 }
 
-.toggle i {
-    transition: transform 0.3s ease-out;
-}
-
-.rotated {
-    transform: rotate(180deg);
+.filterBox ul li {
+    list-style: none;
+    padding: 3% 0;
 }
 
 
-/* ---- SPAN ---- */
+
+/* ---- SPAN RECIPE NUMBER ---- */
 
 .recipe-count {
     position: absolute;
@@ -277,8 +276,4 @@
     height: 32px;
     font-size: 1.6rem;
 }
-/* ---- ---- ---- */
-
-
-
 
