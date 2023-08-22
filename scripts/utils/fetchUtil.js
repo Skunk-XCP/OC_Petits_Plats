@@ -1,7 +1,5 @@
 const filters = ["ingredients", "ustensils", "appliance"]
 
-
-
 async function getRecipes() {
     const response = await fetch("../data/recipes.json");
     const data = await response.json();
@@ -9,24 +7,24 @@ async function getRecipes() {
     return recipes;
 }
 
-
 function init() {
     getRecipes()
-    .then((recipes) => {
-        displayRecipes(recipes);
-        filters.forEach(filter => displayFilter(filter));
+        .then((recipes) => {
+            displayRecipes(recipes);
 
-        const tagFilter = new TagFilters(recipes);
+            const tagFilter = new TagFilters(recipes);
 
-        const ingredientList = tagFilter.filteredIngredients();
-        const applianceList = tagFilter.filteredAppliance();
-        const utensilList = tagFilter.filteredUstensils();
+            const ingredientList = tagFilter.filteredIngredients();
+            const applianceList = tagFilter.filteredAppliance();
+            const utensilList = tagFilter.filteredUstensils();
+            filters.forEach(filter => {
 
-        filterButtonsLists("ingredients", ingredientList);
-        filterButtonsLists("appliance", applianceList);
-        filterButtonsLists("ustensils", utensilList);
-    })
+                if (filter === "ingredients") {
+                    displayFilter(filter, ingredientList)
+                } 
+                
+            })
+        })
 }
-
 
 init();

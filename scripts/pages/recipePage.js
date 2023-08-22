@@ -45,19 +45,12 @@ function updateRecipesDisplay(recipes) {
     }
 }
 
-async function displayFilter(type) {
-    const filterHTML = filter(type);
+async function displayFilter(type, itemList) {
+    const filterHTML = filter(type, itemList);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
 
-    // Ajout de l'écouteur d'événement ici
-    const toggleButton = target.querySelector('.toggle');
-    if (toggleButton) {
-        toggleButton.addEventListener('click', function() {
-            const type = this.previousElementSibling.id;
-            toggleFilterHeight(type);
-        });
-    }
+    bindClickFilterItem();
 }
 
 
@@ -95,13 +88,3 @@ function updateRecipeCountSpan(count) {
 }
 
 
-
-function filterButtonsLists(type, list) {
-    const ulElement = document.getElementById(`${type}_list`);
-    
-    for (const item of list) {
-        const listItem = document.createElement('li');
-        listItem.textContent = item;
-        ulElement.appendChild(listItem);
-    }
-}

@@ -3,22 +3,7 @@ class TagFilters {
         this.recipes = recipes;
     }
 
-    // filteredIngredients() {
-    //     let allIngredients = [];
-    //     let uniqueIngredient;
-    //     for (let i = 0 ; i < this.recipes.length ; i++) {
-    //         for (let j = 0; j < this.recipes[i].ingredients.length; j++) {
-    //             allIngredients.push(this.recipes[i].ingredients[j].ingredient)
-    //             uniqueIngredient = [... new Set(allIngredients)]
-    //         }
-    //     }
-    //     console.log(uniqueIngredient);
-    //     console.log(allIngredients);
-
-    // }
-
-
-
+ 
     filteredIngredients() {
         // Utiliser flatMap pour obtenir tous les ingrédients
         const allIngredients = this.recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient));
