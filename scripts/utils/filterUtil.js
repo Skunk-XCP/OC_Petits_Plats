@@ -14,20 +14,16 @@ function filter(type, items) {
             <div id="${type}_list" class="type_list">
                 <label for="${type}"></label>
                 <input type="text" id="${type}" class="searchBar_filter">
-                <div>
-                  ${listItems}
-                </div>
+                <buton class="search-tag__erase " type="button"><i class="fa-solid fa-xmark"></i></buton>
+            </div>
+            <div>
+                ${listItems}
             </div>
         </div>
     `;
 }
 
 
-// function bindClickFilterItem() {
-//     const filterItem = document.getElementsByClassName("filter-item");
-//     filterItem.forEach
-    
-// }
 
 function bindClickFilterItem() {
     const filterItems = document.getElementsByClassName("filter-item");
@@ -35,18 +31,35 @@ function bindClickFilterItem() {
 
     // Convertir HTMLCollection en Array
     Array.from(filterItems).forEach(item => {
-        item.addEventListener("click", function() {
+        item.addEventListener("click", function () {
             const itemName = this.textContent.trim();
 
-            const tag = document.createElement("span");
-            tag.className = "tag";
-            tag.textContent = itemName;
+            // Vérifiez si le tag existe déjà
+            const existingTags = tagsContainer.querySelectorAll('.tag');
+            for(let i = 0; i < existingTags.length; i++) {
+                if (existingTags[i].textContent.includes(itemName)) {
+                    // Si le tag existe déjà, nous sortons de la fonction callback
+                    return;  
+                }
+            }
 
-            tagsContainer.appendChild(tag);
+            const tagMarkup = `
+                <span class="tag">${itemName}
+                    <button class="tag__erase" type="button">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </span>
+            `;
 
+            tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
 
-            // Code à exécuter lors du clic sur un élément
-            console.log("Item clicked:", this.textContent.trim());
+            // Sélection du dernier tag inséré
+            const lastInsertedTag = tagsContainer.lastElementChild; 
+            const eraseButton = lastInsertedTag.querySelector('.tag__erase');
+            eraseButton.addEventListener('click', function() {
+                lastInsertedTag.remove();
+            });
         });
     });
 }
+

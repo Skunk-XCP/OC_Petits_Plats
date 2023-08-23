@@ -99,6 +99,10 @@
     width: 100%;
 }
 
+main {
+    background-color: lightgray;
+}
+
 /* ---- CARDS ---- */
 .recipes-container {
     background-color: lightgray;
@@ -244,7 +248,7 @@
     outline: none;
     cursor: pointer;
     margin-top: 25px;
-    padding: 5px;
+    padding: 5px 0 5px 15px;
 
 }
 
@@ -256,6 +260,7 @@
 
 .searchBar_filter {
     width: 100%;
+    height: 30px;
     padding: 0 10px;
     margin-bottom: 20px;
     outline: none; 
@@ -264,8 +269,10 @@
 }
 
 .type_list {
+    position: relative;
     padding: 0 10px;
 }
+
 
 .filter-item {
     display: flex;
@@ -280,22 +287,31 @@
 }
 
 .tags-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: inline-block;
     background-color: lightgray;
 }
 
 
 .tag {
     display: block;
-    padding: 5px 10px;
-    /* margin: 5px; */
-    /* grid-template-columns: 85px; */
+    padding: 10px 10px;
+    margin: 5px;
     background-color: #FFD15B;
     border-radius: 5px;
     max-width: max-content;
 }
 
+.search-tag__erase {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    color: lightgray;
+}
 
+.tag__erase {
+    margin-left: 25px;
+    padding: 6px 8px;
+    background-color: transparent;
+    border: none;
+}
 
