@@ -92,4 +92,3 @@ function updateRecipeCountSpan(count) {
 
 
 
-

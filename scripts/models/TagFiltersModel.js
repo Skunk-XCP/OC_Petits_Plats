@@ -3,7 +3,6 @@ class TagFilters {
         this.recipes = recipes;
     }
 
- 
     filteredIngredients() {
         // Utiliser flatMap pour obtenir tous les ingrédients
         const allIngredients = this.recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient));
@@ -16,7 +15,6 @@ class TagFilters {
         return uniqueIngredientsArray;
     }
     
-
     filteredAppliance() {
         const allAppliances = this.recipes.map(recipe => recipe.appliance);
         
@@ -36,6 +34,5 @@ class TagFilters {
         
         return uniqueUstensilsArray;
     }
-    
 }
 

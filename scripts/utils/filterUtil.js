@@ -1,6 +1,6 @@
 const translations = {
     "ingredients": "Ingrédients",
-    "utensils": "Ustensiles",
+    "ustensils": "Ustensiles",
     "appliance": "Appareil"
 };
 
@@ -14,7 +14,7 @@ function filter(type, items) {
             <div id="${type}_list" class="type_list">
                 <label for="${type}"></label>
                 <input type="text" id="${type}" class="searchBar_filter">
-                <button class="search-tag__erase " type="button"><i class="fa-solid fa-xmark"></i></button>
+                <button class="search-tag__erase hidden" type="button"><i class="fa-solid fa-xmark"></i></button>
                 <img class="search-tag__magnifying-glass" src="/assets/images/search-valid.svg" alt="Icone loupe">
             </div>
 
@@ -23,6 +23,8 @@ function filter(type, items) {
             </div>
         </div>
     `;
+
+    toggleFilter(htmlContent);
 
     return htmlContent;
 }
@@ -71,7 +73,6 @@ function filterItemsByValue(type) {
 
 // Supprime la valeur d'un élément d'entrée et met à jour la liste des items en conséquence
 function deleteInputTagFilter(type) {
-    console.log('bindEraseInputEvent est appelée avec :', type);
     const eraseButton = document.querySelector(`#${type}_filter .search-tag__erase`);
     const inputField = document.querySelector(`#${type}_filter .searchBar_filter`);
 
@@ -80,7 +81,21 @@ function deleteInputTagFilter(type) {
     eraseButton.addEventListener('click', function() {
         inputField.value = '';
         filterItemsByValue(type);
+        updateEraseButtonVisibility();
     });
+
+    inputField.addEventListener('input', updateEraseButtonVisibility);
+
+    function updateEraseButtonVisibility() {
+        if (inputField.value.length === 0) {
+            eraseButton.classList.add('hidden');
+        } else {
+            eraseButton.classList.remove('hidden');
+        }
+    }
+
+    // Initial check
+    updateEraseButtonVisibility();
 }
 
 
@@ -88,7 +103,7 @@ function bindClickFilterItem() {
     const filterItems = document.getElementsByClassName("filter-item");
     const tagsContainer = document.getElementById("tags-container");
 
-    // Convertir HTMLCollection en Array
+    // Converti HTMLCollection en Array
     Array.from(filterItems).forEach(item => {
         item.addEventListener("click", function () {
             const itemName = this.textContent.trim();
@@ -112,17 +127,18 @@ function bindClickFilterItem() {
 
             tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
 
-
-
             // Sélection du dernier tag inséré
             const lastInsertedTag = tagsContainer.lastElementChild;
             const eraseButton = lastInsertedTag.querySelector('.tag__erase');
             eraseButton.addEventListener('click', function () {
                 lastInsertedTag.remove();
             });
-
-            
         });
     });
 }
+
+
+
+
+
 

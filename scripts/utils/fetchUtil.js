@@ -21,7 +21,12 @@ function init() {
 
                 if (filter === "ingredients") {
                     displayFilter(filter, ingredientList)
-                } 
+                } else if (filter === "appliance") {
+                    displayFilter(filter, applianceList)
+                } else if (filter === "ustensils") {
+                    displayFilter(filter, utensilList)
+                }
+                
                 
             })
         })
