@@ -51,6 +51,9 @@ async function displayFilter(type, itemList) {
     target.insertAdjacentHTML('beforeend', filterHTML);
 
     bindClickFilterItem();
+    deleteInputTagFilter(type);
+    handleFilterTagsInput(type)
+    filterItemsByValue(type)
 }
 
 

@@ -43,13 +43,13 @@
 .search-bar-form {
     position: relative;
     width: 60%;
-    margin: 0 auto; 
+    margin: 0 auto;
 }
 
 .search-bar__input {
     width: 100%;
     height: 70px;
-    padding: 10px 40px 10px 20px; 
+    padding: 10px 40px 10px 20px;
     font-size: 1.2rem;
     border: none;
     border-radius: 15px;
@@ -57,22 +57,22 @@
 }
 
 .search-bar__magnifying-glass {
-    position: absolute; 
+    position: absolute;
     right: 5px;
-    top: 50%; 
-    transform: translateY(-50%); 
-    background: none; 
-    border: none; 
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
 }
 
 .search-bar__erase {
-    position: absolute; 
+    position: absolute;
     right: 85px;
-    top: 50%; 
-    transform: translateY(-50%); 
-    background: none; 
-    border: none; 
-    cursor: pointer; 
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
     font-size: 1.5rem;
     color: lightgray;
 }
@@ -128,7 +128,7 @@ main {
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.recipes-container > * {
+.recipes-container>* {
     min-width: 0;
 }
 
@@ -179,7 +179,7 @@ main {
     margin-bottom: 40px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;  
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -199,7 +199,7 @@ main {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 90%; 
+    max-width: 90%;
 }
 
 .ingredient_unit {
@@ -231,7 +231,7 @@ main {
 }
 
 .filterBox {
-    position: relative; 
+    position: relative;
     /* height: 56px; */
     width: 13%;
     margin-right: 67px;
@@ -242,7 +242,7 @@ main {
 
 .toggle {
     font-size: 1.2rem;
-    transform: translateY(-50%); 
+    transform: translateY(-50%);
     background-color: transparent;
     border: none;
     outline: none;
@@ -263,7 +263,7 @@ main {
     height: 30px;
     padding: 0 10px;
     margin-bottom: 20px;
-    outline: none; 
+    outline: none;
     font-size: 1.1rem;
     border: 1px solid lightgrey;
 }
@@ -273,17 +273,23 @@ main {
     padding: 0 10px;
 }
 
+.type_list input {
+    padding-right: 55px;
+}
 
 .filter-item {
     display: flex;
     flex-direction: column;
     padding: 4px 10px;
     cursor: pointer;
-
 }
 
 .filter-item:hover {
     background-color: #FFD15B;
+}
+
+.hidden_item {
+    display: none;
 }
 
 .tags-container {
@@ -303,9 +309,18 @@ main {
 
 .search-tag__erase {
     position: absolute;
-    right: 20px;
-    top: 5px;
+    right: 35px;
+    top: 2px;
     color: lightgray;
+    padding: 5px 8px;
+    background-color: transparent;
+    border: none;
+}
+
+.search-tag__magnifying-glass {
+    position: absolute;
+    right: 12px;
+    height: 30px;
 }
 
 .tag__erase {
