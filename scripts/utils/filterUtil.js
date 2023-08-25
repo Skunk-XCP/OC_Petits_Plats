@@ -24,8 +24,6 @@ function filter(type, items) {
         </div>
     `;
 
-    toggleFilter(htmlContent);
-
     return htmlContent;
 }
 
@@ -78,7 +76,7 @@ function deleteInputTagFilter(type) {
 
     // Lorsque le bouton d'effacement est cliqué, 
     // la valeur de l'input est supprimée et les items sont mis à jour
-    eraseButton.addEventListener('click', function() {
+    eraseButton.addEventListener('click', function () {
         inputField.value = '';
         filterItemsByValue(type);
         updateEraseButtonVisibility();
@@ -133,12 +131,30 @@ function bindClickFilterItem() {
             eraseButton.addEventListener('click', function () {
                 lastInsertedTag.remove();
             });
+
+            // Trouve le filterBox parent et le ferme
+            const parentFilterBox = this.closest('.filterBox');
+            if (parentFilterBox) {
+                parentFilterBox.classList.remove('expanded');
+
+                // Cachez également les éléments à l'intérieur de filterBox
+                const typeList = parentFilterBox.querySelector('.type_list');
+                const itemList = parentFilterBox.querySelector('div:last-of-type');
+
+                typeList.style.display = 'visible';
+                itemList.style.display = 'visible';
+            }
+
+            const toggleButton = this.closest('.filterBox').querySelector('.toggle');
+            const icon = toggleButton.querySelector('i');
+            
+            if (icon) {
+                if (toggleButton.closest('.filterBox').classList.contains('expanded')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            }
         });
     });
 }
-
-
-
-
-
-

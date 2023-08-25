@@ -29,6 +29,8 @@ function init() {
                 
                 
             })
+            
+            toggleFilter();
         })
 }
 
