@@ -8,9 +8,7 @@ function createRecipeElement(recipe) {
     return doc.querySelector('.recipe_article');
 }
 
-async function displayRecipes() {
-    // Récupère les données des recettes
-    const recipesData = await getRecipes();
+async function displayRecipes(recipesData) {
     // Convertit les données des recettes en objets recette
     allRecipes = recipesData.map(recipeData => 
         new Recipe(recipeData.id, recipeData.image, recipeData.name, recipeData.servings, recipeData.ingredients, recipeData.time, recipeData.description, recipeData.appliance, recipeData.ustensils)
@@ -21,39 +19,89 @@ async function displayRecipes() {
 }
 
 // Met à jour l'affichage des recettes sur la page
-function updateRecipesDisplay(recipes) {
-    // Sélectionne le conteneur des recettes
-    const recipesContainer = document.getElementById('recipes-container');
-    // Vide le conteneur des recettes
-    recipesContainer.innerHTML = ''; 
+// function updateRecipesDisplay(recipes) {
 
-    if (recipes.length === 0) {
-        const noResultsMessage = document.createElement('p');
-        noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
-        recipesContainer.appendChild(noResultsMessage);
+//     try {
+//         // Sélectionne le conteneur des recettes
+//     const recipesContainer = document.getElementById('recipes-container');
+//     // Vide le conteneur des recettes
+//     recipesContainer.innerHTML = ''; 
+
+//     if (recipes.length === 0) {
+//         const noResultsMessage = document.createElement('p');
+//         noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
+//         recipesContainer.appendChild(noResultsMessage);
         
-        // Ajoute la classe CSS pour le mode "Aucun résultat"
-        recipesContainer.classList.add('no-results');
-    } else {
-        // Si des recettes sont trouvées, retire la classe CSS pour le mode "Aucun résultat"
-        recipesContainer.classList.remove('no-results');
+//         // Ajoute la classe CSS pour le mode "Aucun résultat"
+//         recipesContainer.classList.add('no-results');
+//     } else {
+//         // Si des recettes sont trouvées, retire la classe CSS pour le mode "Aucun résultat"
+//         recipesContainer.classList.remove('no-results');
 
-        for (const recipe of recipes) {
-            const recipeElement = createRecipeElement(recipe);
-            recipesContainer.appendChild(recipeElement);
+//         for (const recipe of recipes) {
+//             const recipeElement = createRecipeElement(recipe);
+//             recipesContainer.appendChild(recipeElement);
+//         }
+//     }
+//     } catch (error) {
+//         console.error("Erreur lors de la mise à jour de l'affichage des recettes:", error);
+//     }    
+// }
+
+
+function updateRecipesDisplay(recipes) {
+    try {
+        const recipesContainer = document.getElementById('recipes-container');
+        clearContainer(recipesContainer);
+
+        if (recipes.length === 0) {
+            displayNoResultsMessage(recipesContainer);
+        } else {
+            displayRecipesInContainer(recipes, recipesContainer);
         }
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de l'affichage des recettes:", error);
     }
 }
+
+function clearContainer(container) {
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+}
+
+function displayNoResultsMessage(container) {
+    const noResultsMessage = document.createElement('p');
+    noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
+    container.appendChild(noResultsMessage);
+    container.classList.add('no-results');
+}
+
+function displayRecipesInContainer(recipes, container) {
+    container.classList.remove('no-results');
+    for (const recipe of recipes) {
+        const recipeElement = createRecipeElement(recipe);
+        container.appendChild(recipeElement);
+    }
+}
+
+
+
+
+
+
+
+
+
 
 async function displayFilter(type, itemList) {
     const filterHTML = filter(type, itemList);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
 
-    bindClickFilterItem();
     deleteInputTagFilter(type);
-    handleFilterTagsInput(type)
-    filterItemsByValue(type)
+    handleFilterTagsInput(type);
+    filterItemsByValue(type);
 }
 
 
@@ -91,4 +139,22 @@ function updateRecipeCountSpan(count) {
 }
 
 
+function updateItemsDisplay(items, itemType) {
+    // Sélectionnez l'élément DOM approprié pour la liste d'items
+    const itemsContainer = document.querySelector(`.filterBox[data-type=${itemType}] .items-list`);
+    
+    if (!itemsContainer) {
+        console.error(`No container found for type: ${itemType}`);
+        return;
+    }
+    // Videz le conteneur
+    itemsContainer.innerHTML = '';
 
+    // Ajoutez les items filtrés
+    items.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('filter-item');
+        itemElement.textContent = item;
+        itemsContainer.appendChild(itemElement);
+    });
+}

@@ -257,9 +257,11 @@ main {
     padding: 5px 0 5px 15px;
 }
 
-.toggle i {
+.chevron {
     position: absolute;
-    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 15%;
     font-size: 1rem;
     transition: transform 0.3s ease;
 }
@@ -308,12 +310,12 @@ main {
     padding: 0 10px;
 }
 
-.filterBox > div:last-of-type {
+.items-list {
     margin-top: 40px;
 }
 
 .type_list, 
-.filterBox > div:last-of-type {
+.items-list {
     position: absolute;
     display: none;
     top: 100%; 
@@ -325,29 +327,29 @@ main {
     border-radius: 0 0 10px 10px;
     background-color: white; 
 }
-.filterBox.expanded > div:last-of-type {
+.filterBox.expanded > .items-list {
     overflow: scroll;
     -webkit-mask-image: radial-gradient(circle at center, black 99%, transparent 100%);
     mask-image: radial-gradient(circle at center, black 99%, transparent 100%);
 }
 
 .filterBox.expanded .type_list,
-.filterBox.expanded > div:last-of-type {
+.filterBox.expanded > .items-list {
     display: block; 
 }
 
-.filterBox.expanded > div:last-of-type::-webkit-scrollbar {
+.filterBox.expanded > .items-list::-webkit-scrollbar {
     width: 4px;
     height: 0;
     border-radius: 20px;
 }
 
-.filterBox.expanded > div:last-of-type::-webkit-scrollbar-thumb {
+.filterBox.expanded > .items-list::-webkit-scrollbar-thumb {
     background-color: #aaa;
     border-radius: 4px;
 }
 
-.filterBox.expanded > div:last-of-type::-webkit-scrollbar-track {
+.filterBox.expanded > .items-list::-webkit-scrollbar-track {
     background-color: #f1f1f1;
 }
 
@@ -393,3 +395,20 @@ main {
     border: none;
 }
 
+
+
+
+@media screen and (max-width: 1250px) {
+
+    .recipe-count {
+        top: 20px;
+    }
+
+    .filters-container {
+        gap: 20px;
+    }
+
+    .filterBox {
+        width: 15%;
+    }
+}

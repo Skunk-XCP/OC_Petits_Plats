@@ -26,11 +26,10 @@ function init() {
                 } else if (filter === "ustensils") {
                     displayFilter(filter, utensilList)
                 }
-                
-                
             })
             
             toggleFilter();
+            bindClickFilterItem();
         })
 }
 

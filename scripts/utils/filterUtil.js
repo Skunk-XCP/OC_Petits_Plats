@@ -4,13 +4,15 @@ const translations = {
     "appliance": "Appareil"
 };
 
+let activeTags = [];
+
 function filter(type, items) {
     const translatedType = translations[type] || type;
-    const listItems = items.map(item => `<a class="filter-item" data-type="${type}" data-type="${item}">${item} </a>`).join('');
+    const listItems = items.map(item => `<a class="filter-item" data-type="${type}" data-item="${item}">${item} </a>`).join('');
 
     let htmlContent = `
-        <div id="${type}_filter" class="filterBox">
-            <button type="button" class="toggle">${translatedType} <i class="fa-solid fa-chevron-down"></i></button> 
+        <div id="${type}_filter" class="filterBox" data-type="${type}">
+            <button type="button" class="toggle">${translatedType} </button> <i class="fa-solid fa-chevron-down chevron"></i>
             <div id="${type}_list" class="type_list">
                 <label for="${type}"></label>
                 <input type="text" id="${type}" class="searchBar_filter">
@@ -18,7 +20,7 @@ function filter(type, items) {
                 <img class="search-tag__magnifying-glass" src="/assets/images/search-valid.svg" alt="Icone loupe">
             </div>
 
-            <div>
+            <div class="items-list">
                 ${listItems}
             </div>
         </div>
@@ -104,7 +106,16 @@ function bindClickFilterItem() {
     // Converti HTMLCollection en Array
     Array.from(filterItems).forEach(item => {
         item.addEventListener("click", function () {
-            const itemName = this.textContent.trim();
+            const itemName = this.dataset.item;
+            const itemType = this.dataset.type;
+
+            activeTags.push({name: itemName, type: itemType})
+            const inputSearch = document.querySelector("#search-bar");
+            const searchText = inputSearch.value;
+
+            searchAndFilter(searchText, activeTags);
+            // filterRecipes(searchText, activeTags);
+
 
             // Vérifiez si le tag existe déjà
             const existingTags = tagsContainer.querySelectorAll('.tag');
