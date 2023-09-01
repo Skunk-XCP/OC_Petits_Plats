@@ -38,26 +38,30 @@ function bindClickFilterItem() {
             const itemName = this.dataset.item;
             const itemType = this.dataset.type;
 
+            // Si l'élément est désactivé, ignorez le clic
+            if (this.classList.contains('disabled')) {
+                return;
+            }
+
             // Gestion des tags
             handleTags(itemName, itemType);
 
             // Mise à jour des recettes affichées
             updateDisplayedRecipes(itemName, itemType);
 
-            // Gestion de l'interface utilisateur du filterBox
-            handleUIUpdates(this);
         });
     });
 }
 
-function handleTags(itemName) {
+function handleTags(itemName, itemType) {
     const tagsContainer = document.getElementById("tags-container");
 
-    // Vérifiez si le tag existe déjà
+    // Vérifie si le tag existe déjà
     const existingTags = tagsContainer.querySelectorAll('.tag');
     for (let i = 0; i < existingTags.length; i++) {
         if (existingTags[i].textContent.includes(itemName)) {
-            return; // Si le tag existe déjà, nous sortons de la fonction
+            // Si le tag existe déjà, nous sortons de la fonction
+            return; 
         }
     }
 
@@ -71,6 +75,12 @@ function handleTags(itemName) {
 
     tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
     bindDeleteTagEvent(tagsContainer.lastElementChild);
+
+    // Désactive l'élément
+    const clickedItem = document.querySelector(`.filter-item[data-type="${itemType}"][data-item="${itemName}"]`);
+    if (clickedItem) {
+        clickedItem.classList.add('disabled');
+    }
 }
 
 function updateDisplayedRecipes(itemName, itemType) {
@@ -78,32 +88,6 @@ function updateDisplayedRecipes(itemName, itemType) {
     const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
-}
-
-function handleUIUpdates(filterItem) {
-    // Trouve le filterBox parent et le ferme
-    const parentFilterBox = filterItem.closest('.filterBox');
-    if (parentFilterBox) {
-        parentFilterBox.classList.remove('expanded');
-
-        // Cachez également les éléments à l'intérieur de filterBox
-        const typeList = parentFilterBox.querySelector('.type_list');
-        const itemList = parentFilterBox.querySelector('div:last-of-type');
-
-        typeList.style.display = 'visible';
-        itemList.style.display = 'visible';
-    }
-
-    const toggleButton = filterItem.closest('.filterBox').querySelector('.toggle');
-    const icon = toggleButton.querySelector('i');
-
-    if (icon) {
-        if (toggleButton.closest('.filterBox').classList.contains('expanded')) {
-            icon.style.transform = 'rotate(180deg)';
-        } else {
-            icon.style.transform = 'rotate(0deg)';
-        }
-    }
 }
 
 // Compare deux chaînes de caractères après avoir supprimé les accents 
@@ -199,10 +183,16 @@ function deleteActiveTag(itemName) {
         }
     });
 
-    // Après avoir supprimé un tag, vous pourriez aussi vouloir mettre à jour la liste des recettes.
+    // Remet la liste de recettes à jour avec suppression d'un tag
     const recipesToShow = filterRecipes('', activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
+
+    // Réactivez l'élément
+    const clickedItem = document.querySelector(`.filter-item[data-item="${itemName}"]`);
+    if (clickedItem) {
+        clickedItem.classList.remove('disabled');
+    }
 }
 
 
