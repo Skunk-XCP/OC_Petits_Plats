@@ -1,8 +1,6 @@
 const eraseButton = document.querySelector(".search-bar__erase");
 const inputSearch = document.querySelector("#search-bar");
 inputSearch.addEventListener('input', handleSearchInput);
-
-inputSearch.addEventListener('input', handleSearchInput);
 eraseButton.addEventListener("click", clearInput);
 
 

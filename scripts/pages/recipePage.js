@@ -48,8 +48,6 @@ function updateRecipesDisplay(recipes) {
 }
 
 
-
-
 async function displayFilter(type, itemList) {
     const filterHTML = filter(type, itemList);
     const target = document.getElementById("filters-container");
@@ -59,7 +57,6 @@ async function displayFilter(type, itemList) {
     handleFilterTagsInput(type);
     filterItemsByValue(type);
 }
-
 
 
 // Initialiser la span qui affiche le compte des recettes
@@ -96,16 +93,16 @@ function updateRecipeCountSpan(count) {
 
 
 function updateItemsDisplay(items, itemType) {
-    // Sélectionnez l'élément DOM approprié pour la liste d'items
+    // Sélectionne l'élément DOM approprié pour la liste d'items
     const itemsContainer = document.querySelector(`.filterBox[data-type=${itemType}] .items-list`);
 
     if (!itemsContainer) {
         return;
     }
-    // Videz le conteneur
+    // Vide le conteneur
     itemsContainer.innerHTML = '';
 
-    // Ajoutez les items filtrés
+    // Ajoute les items filtrés
     items.forEach(item => {
         const itemElement = document.createElement('div');
         itemElement.classList.add('filter-item');
