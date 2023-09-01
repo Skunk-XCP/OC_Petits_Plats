@@ -1,31 +1,33 @@
-// Filtre les recettes en fonction d'une requête donnée
 function filterRecipes(query, tags, recipes) {
 
-    let recipesFromSearchBar = recipes.filter(recipe => 
-        recipe.name.toLowerCase().includes(query) || 
-        recipe.description.toLowerCase().includes(query) ||
-        recipe.appliance.toLowerCase().includes(query) ||
-        recipe.ustensils.some(utensil => utensil.toLowerCase().includes(query)) ||
-        recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query))
+    let recipesFromSearchBar =  recipes.filter(recipe => 
+        recipe.name.toLowerCase().includes(query.toLowerCase()) || 
+        recipe.description.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.appliance.toLowerCase().includes(query.toLowerCase()) ||
+        recipe.ustensils.some(utensil => utensil.toLowerCase().includes(query.toLowerCase())) ||
+        recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query.toLowerCase()))
     );
 
-    // Filtre les recettes en fonction des tags
-    if (tags && tags.length > 0) {
-        recipesFromSearchBar = recipesFromSearchBar.filter(recipe => {
-            return tags.every(tag => {
-                switch(tag.type) {
-                    case 'appliance':
-                        return recipe.appliance.toLowerCase() === tag.name.toLowerCase();
-                    case 'ustensil':
-                        return recipe.ustensils.includes(tag.name);
-                    case 'ingredient':
-                        return recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase());
-                    default:
-                        return false;
-                }
-            });
-        });
+    if(tags.length > 0) {
+        recipesFromSearchBar = filterByTags(recipesFromSearchBar, tags);
     }
 
-    return recipesFromSearchBar
+    return recipesFromSearchBar;
+}
+
+function filterByTags(recipes, tags) {
+    return recipes.filter(recipe => {
+        for (let tag of tags) {
+            if (tag.type === "ingredients" && !recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase())) {
+                return false;
+            }
+            if (tag.type === "ustensils" && !recipe.ustensils.some(utensil => utensil.toLowerCase() === tag.name.toLowerCase())) {
+                return false;
+            }
+            if (tag.type === "ingredients" && !recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
+    });
 }

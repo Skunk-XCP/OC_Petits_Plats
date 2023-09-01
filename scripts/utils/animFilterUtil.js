@@ -1,17 +1,21 @@
-function toggleFilter() {
-    const toggleElements = document.querySelectorAll('.toggle');
 
-    if (!toggleElements.length) {
-        console.error("Element '.toggle' not found!");
+function toggleFilter() {
+    const filterBoxes = document.querySelectorAll('.filterBox');
+
+    if (!filterBoxes.length) {
         return;
     }
 
-    toggleElements.forEach(toggleElement => {
-        toggleElement.addEventListener('click', function() {
-            const filterBox = this.closest('.filterBox');
-            const icon = this.querySelector('i');
+    filterBoxes.forEach(filterBox => {
+        filterBox.addEventListener('click', function(event) {
+            // Si le clic est sur searchBar_filter ou sur un de ses descendants, on ne fait rien
+            if (event.target.closest('.searchBar_filter') || event.target.closest('.type_list')) {
+                return;
+            }
+
+            const icon = filterBox.querySelector('i');
             const typeList = filterBox.querySelector('.type_list');
-            const itemList = filterBox.querySelector('div:last-of-type');
+            const itemList = filterBox.querySelector('.items-list');
 
             // Toggle la classe expanded pour le border-radius
             filterBox.classList.toggle('expanded'); 

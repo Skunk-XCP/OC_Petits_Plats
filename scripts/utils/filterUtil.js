@@ -29,6 +29,83 @@ function filter(type, items) {
     return htmlContent;
 }
 
+function bindClickFilterItem() {
+    const filterItems = document.getElementsByClassName("filter-item");
+    
+    // Converti HTMLCollection en Array
+    Array.from(filterItems).forEach(item => {
+        item.addEventListener("click", function () {
+            const itemName = this.dataset.item;
+            const itemType = this.dataset.type;
+
+            // Gestion des tags
+            handleTags(itemName, itemType);
+
+            // Mise à jour des recettes affichées
+            updateDisplayedRecipes(itemName, itemType);
+
+            // Gestion de l'interface utilisateur du filterBox
+            handleUIUpdates(this);
+        });
+    });
+}
+
+function handleTags(itemName) {
+    const tagsContainer = document.getElementById("tags-container");
+
+    // Vérifiez si le tag existe déjà
+    const existingTags = tagsContainer.querySelectorAll('.tag');
+    for (let i = 0; i < existingTags.length; i++) {
+        if (existingTags[i].textContent.includes(itemName)) {
+            return; // Si le tag existe déjà, nous sortons de la fonction
+        }
+    }
+
+    const tagMarkup = `
+        <span class="tag">${itemName}
+            <button class="tag__erase" type="button">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </span>
+    `;
+
+    tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
+    bindDeleteTagEvent(tagsContainer.lastElementChild);
+}
+
+function updateDisplayedRecipes(itemName, itemType) {
+    activeTags.push({ type: itemType, name: itemName });
+    const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
+    updateRecipesDisplay(recipesToShow);
+    updateRecipeCountSpan(recipesToShow.length);
+}
+
+function handleUIUpdates(filterItem) {
+    // Trouve le filterBox parent et le ferme
+    const parentFilterBox = filterItem.closest('.filterBox');
+    if (parentFilterBox) {
+        parentFilterBox.classList.remove('expanded');
+
+        // Cachez également les éléments à l'intérieur de filterBox
+        const typeList = parentFilterBox.querySelector('.type_list');
+        const itemList = parentFilterBox.querySelector('div:last-of-type');
+
+        typeList.style.display = 'visible';
+        itemList.style.display = 'visible';
+    }
+
+    const toggleButton = filterItem.closest('.filterBox').querySelector('.toggle');
+    const icon = toggleButton.querySelector('i');
+
+    if (icon) {
+        if (toggleButton.closest('.filterBox').classList.contains('expanded')) {
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+}
+
 // Compare deux chaînes de caractères après avoir supprimé les accents 
 // et les avoir transformées en minuscules
 function compareWithoutAccents(str1, str2) {
@@ -99,73 +176,39 @@ function deleteInputTagFilter(type) {
 }
 
 
-function bindClickFilterItem() {
-    const filterItems = document.getElementsByClassName("filter-item");
-    const tagsContainer = document.getElementById("tags-container");
-
-    // Converti HTMLCollection en Array
-    Array.from(filterItems).forEach(item => {
-        item.addEventListener("click", function () {
-            const itemName = this.dataset.item;
-            const itemType = this.dataset.type;
-
-            activeTags.push({name: itemName, type: itemType})
-            const inputSearch = document.querySelector("#search-bar");
-            const searchText = inputSearch.value;
-
-            searchAndFilter(searchText, activeTags);
-            // filterRecipes(searchText, activeTags);
-
-
-            // Vérifiez si le tag existe déjà
-            const existingTags = tagsContainer.querySelectorAll('.tag');
-            for (let i = 0; i < existingTags.length; i++) {
-                if (existingTags[i].textContent.includes(itemName)) {
-                    // Si le tag existe déjà, nous sortons de la fonction callback
-                    return;
-                }
-            }
-
-            const tagMarkup = `
-                <span class="tag">${itemName}
-                    <button class="tag__erase" type="button">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </span>
-            `;
-
-            tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
-
-            // Sélection du dernier tag inséré
-            const lastInsertedTag = tagsContainer.lastElementChild;
-            const eraseButton = lastInsertedTag.querySelector('.tag__erase');
-            eraseButton.addEventListener('click', function () {
-                lastInsertedTag.remove();
-            });
-
-            // Trouve le filterBox parent et le ferme
-            const parentFilterBox = this.closest('.filterBox');
-            if (parentFilterBox) {
-                parentFilterBox.classList.remove('expanded');
-
-                // Cachez également les éléments à l'intérieur de filterBox
-                const typeList = parentFilterBox.querySelector('.type_list');
-                const itemList = parentFilterBox.querySelector('div:last-of-type');
-
-                typeList.style.display = 'visible';
-                itemList.style.display = 'visible';
-            }
-
-            const toggleButton = this.closest('.filterBox').querySelector('.toggle');
-            const icon = toggleButton.querySelector('i');
-            
-            if (icon) {
-                if (toggleButton.closest('.filterBox').classList.contains('expanded')) {
-                    icon.style.transform = 'rotate(180deg)';
-                } else {
-                    icon.style.transform = 'rotate(0deg)';
-                }
-            }
-        });
+function bindDeleteTagEvent(tagElement) {
+    const eraseButton = tagElement.querySelector('.tag__erase');
+    eraseButton.addEventListener('click', function () {
+        tagElement.remove();
     });
 }
+
+
+function deleteActiveTag(itemName) {
+    // Supprime le tag du tableau activeTags.
+    const index = activeTags.findIndex(tag => tag.name === itemName);
+    if (index !== -1) {
+        activeTags.splice(index, 1);
+    }
+
+    // Supprime le tag visuellement affiché à l'utilisateur.
+    const tags = document.querySelectorAll('.tag');
+    tags.forEach(tag => {
+        if (tag.textContent.trim() === itemName) {
+            tag.remove();
+        }
+    });
+
+    // Après avoir supprimé un tag, vous pourriez aussi vouloir mettre à jour la liste des recettes.
+    const recipesToShow = filterRecipes('', activeTags, allRecipes);
+    updateRecipesDisplay(recipesToShow);
+    updateRecipeCountSpan(recipesToShow.length);
+}
+
+
+document.addEventListener('click', function(event) {
+    if (event.target.closest('.tag__erase')) {
+        const itemName = event.target.closest('.tag').textContent.trim();
+        deleteActiveTag(itemName);
+    }
+});
