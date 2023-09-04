@@ -12,7 +12,7 @@ function toggleFilter() {
             const itemList = filterBox.querySelector('.items-list');
 
             if (event.target.closest('.filter-item')) {
-                // Si un tag (filter-item) est cliqué, masquez le type_list et items-list
+                // Si un tag (filter-item) est cliqué, masque le type_list et items-list
                 typeList.classList.remove('visible');
                 itemList.classList.remove('visible');
                 filterBox.classList.remove('expanded'); 

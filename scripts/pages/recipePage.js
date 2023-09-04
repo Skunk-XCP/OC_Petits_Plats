@@ -42,12 +42,14 @@ function updateRecipesDisplay(recipes) {
                 recipesContainer.appendChild(recipeElement);
             }
         }
-    } catch (error) {
+    } 
+    
+    catch (error) {
         console.error("Erreur lors de la mise à jour de l'affichage des recettes:", error);
     }
 }
 
-
+// Affiche les boutons de filtre
 async function displayFilter(type, itemList) {
     const filterHTML = filter(type, itemList);
     const target = document.getElementById("filters-container");
@@ -59,7 +61,7 @@ async function displayFilter(type, itemList) {
 }
 
 
-// Initialiser la span qui affiche le compte des recettes
+// Initialise la span qui affiche le compte des recettes
 function initializeRecipeCountSpan() {
     const filtersContainer = document.getElementById('filters-container');
     // Recherche si une span pour le compte des recettes existe déjà
@@ -89,24 +91,4 @@ function updateRecipeCountSpan(count) {
 
     const word = count > 1 ? 'recettes' : 'recette';
     countSpan.textContent = `${count} ${word}`;
-}
-
-
-function updateItemsDisplay(items, itemType) {
-    // Sélectionne l'élément DOM approprié pour la liste d'items
-    const itemsContainer = document.querySelector(`.filterBox[data-type=${itemType}] .items-list`);
-
-    if (!itemsContainer) {
-        return;
-    }
-    // Vide le conteneur
-    itemsContainer.innerHTML = '';
-
-    // Ajoute les items filtrés
-    items.forEach(item => {
-        const itemElement = document.createElement('div');
-        itemElement.classList.add('filter-item');
-        itemElement.textContent = item;
-        itemsContainer.appendChild(itemElement);
-    });
 }

@@ -74,7 +74,7 @@ function handleTags(itemName, itemType) {
     `;
 
     tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
-    bindDeleteTagEvent(tagsContainer.lastElementChild);
+    deleteActiveTag(tagsContainer.lastElementChild);
 
     // Désactive l'élément
     const clickedItem = document.querySelector(`.filter-item[data-type="${itemType}"][data-item="${itemName}"]`);
@@ -83,12 +83,15 @@ function handleTags(itemName, itemType) {
     }
 }
 
+// Met à jour l'affichage des recettes en fonction des tags actifs
 function updateDisplayedRecipes(itemName, itemType) {
     activeTags.push({ type: itemType, name: itemName });
     const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
+    updateFilterItemsVisibility(recipesToShow);
 }
+
 
 // Compare deux chaînes de caractères après avoir supprimé les accents 
 // et les avoir transformées en minuscules
@@ -160,14 +163,6 @@ function deleteInputTagFilter(type) {
 }
 
 
-function bindDeleteTagEvent(tagElement) {
-    const eraseButton = tagElement.querySelector('.tag__erase');
-    eraseButton.addEventListener('click', function () {
-        tagElement.remove();
-    });
-}
-
-
 function deleteActiveTag(itemName) {
     // Supprime le tag du tableau activeTags.
     const index = activeTags.findIndex(tag => tag.name === itemName);
@@ -179,14 +174,16 @@ function deleteActiveTag(itemName) {
     const tags = document.querySelectorAll('.tag');
     tags.forEach(tag => {
         if (tag.textContent.trim() === itemName) {
-            tag.remove();
+            // supprime le tag du DOM
+            tag.remove(); 
         }
     });
 
     // Remet la liste de recettes à jour avec suppression d'un tag
-    const recipesToShow = filterRecipes('', activeTags, allRecipes);
+    const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
+    updateFilterItemsVisibility(recipesToShow);  // ajoutée
 
     // Réactivez l'élément
     const clickedItem = document.querySelector(`.filter-item[data-item="${itemName}"]`);
@@ -194,7 +191,6 @@ function deleteActiveTag(itemName) {
         clickedItem.classList.remove('disabled');
     }
 }
-
 
 document.addEventListener('click', function(event) {
     if (event.target.closest('.tag__erase')) {

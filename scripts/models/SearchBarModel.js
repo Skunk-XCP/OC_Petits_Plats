@@ -6,7 +6,7 @@ eraseButton.addEventListener("click", clearInput);
 
 function handleSearchInput(event) {
     // Récupère la valeur saisie par l'utilisateur
-    const query = event.target.value;
+    const query = event.target.value.toLowerCase();
     let recipesToShow;
 
     // Si la longueur de la requête est égale à 0 -> ajout classe hidden
@@ -19,6 +19,7 @@ function handleSearchInput(event) {
 
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length); 
+    updateFilterItemsVisibility(recipesToShow); 
 }
 
 
