@@ -46,14 +46,20 @@ function bindClickFilterItem() {
             // Gestion des tags
             handleTags(itemName, itemType);
 
+            const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
+
+
             // Mise à jour des recettes affichées
             updateDisplayedRecipes(itemName, itemType);
+
+            updateFilterItemsVisibility(recipesToShow);
 
         });
     });
 }
 
 function handleTags(itemName, itemType) {
+    activeTags.push({ type: itemType, name: itemName });
     const tagsContainer = document.getElementById("tags-container");
 
     // Vérifie si le tag existe déjà
@@ -84,12 +90,9 @@ function handleTags(itemName, itemType) {
 }
 
 // Met à jour l'affichage des recettes en fonction des tags actifs
-function updateDisplayedRecipes(itemName, itemType) {
-    activeTags.push({ type: itemType, name: itemName });
-    const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
+function updateDisplayedRecipes(recipesToShow) {
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
-    updateFilterItemsVisibility(recipesToShow);
 }
 
 

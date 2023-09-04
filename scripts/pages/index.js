@@ -12,11 +12,11 @@ function init() {
         .then((recipes) => {
             displayRecipes(recipes);
 
-            const tagFilter = new TagFilters(recipes);
+            const tagFilters = new TagFilters(recipes);
 
-            const ingredientList = tagFilter.filteredIngredients();
-            const applianceList = tagFilter.filteredAppliance();
-            const utensilList = tagFilter.filteredUstensils();
+            const ingredientList = tagFilters.filteredIngredients();
+            const applianceList = tagFilters.filteredAppliance();
+            const utensilList = tagFilters.filteredUstensils();
             filters.forEach(filter => {
 
                 if (filter === "ingredients") {

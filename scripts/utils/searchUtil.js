@@ -8,35 +8,29 @@ function filterRecipes(query, tags, recipes) {
         recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query))
     );
 
-    if(tags.length > 0) {
-        recipesFromSearchBar = filterByTags(recipesFromSearchBar, tags);
-    }
-
-    return recipesFromSearchBar;
+    return tags.length > 0 ? filterByTags(recipesFromSearchBar, tags) : recipesFromSearchBar;
 }
-
 
 // Filtre une liste de recettes en fonction des tags fournis
 function filterByTags(recipes, tags) {
     return recipes.filter(recipe => {
-        for (let tag of tags) {
+        return tags.every(tag => {
             // Si le tag est de type "ingrédients" et que la recette n'a pas cet ingrédient, 
             // retourne false (exclut la recette)
-            if (tag.type === "ingredients" && !recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase())) {
-                return false;
+            if (tag.type === "ingredients") {
+                return recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase());
             }
-            if (tag.type === "ustensils" && !recipe.ustensils.some(utensil => utensil.toLowerCase() === tag.name.toLowerCase())) {
-                return false;
+            if (tag.type === "ustensils") {
+                return recipe.ustensils.some(utensil => utensil.toLowerCase() === tag.name.toLowerCase());
             }
-            if (tag.type === "appliance" && recipe.appliance.toLowerCase() !== tag.name.toLowerCase()) {
-                return false;
+            if (tag.type === "appliance") {
+                return recipe.appliance.toLowerCase() === tag.name.toLowerCase();
             }
-        }
-        // Si toutes les vérifications sont passées, 
-        // retourne true (inclut la recette dans le résultat)
-        return true;
+            return false;
+        });
     });
 }
+
 
 //MàJ de la span qui affiche le nombre des recettes en fonction du nombre donné
 function updateFilterItemsVisibility(displayedRecipes) {
@@ -54,10 +48,12 @@ function updateFilterItemsVisibility(displayedRecipes) {
                 recipe.ingredients.forEach(ingredient => {
                     uniqueValues.add(ingredient.ingredient.toLowerCase());
                 });
+
             } else if (type === 'ustensils') {
                 recipe.ustensils.forEach(utensil => {
                     uniqueValues.add(utensil.toLowerCase());
                 });
+
             } else if (type === 'appliance') {
                 uniqueValues.add(recipe.appliance.toLowerCase());
             }

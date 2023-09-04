@@ -1,13 +1,16 @@
 class TagFilters {
     constructor(recipes){
-        this.recipes = recipes;
+        // Utiliser flatMap pour obtenir tous les ingrédients
+        this.ingredients = recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient));
+        this.appliance = recipes.map(recipe => recipe.appliance);
+        // this.ustensils = recipes.flatMap(recipe => recipe.ustensils.map(ustensil => this.ustensil.toLowerCase()));
+        this.ustensils = recipes.flatMap(recipe => recipe.ustensils.map(ustensil => ustensil.toLowerCase()));
+
     }
 
     filteredIngredients() {
-        // Utiliser flatMap pour obtenir tous les ingrédients
-        const allIngredients = this.recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient));
         // Éliminer les doublons avec Set
-        const uniqueIngredientsSet = new Set(allIngredients);
+        const uniqueIngredientsSet = new Set(this.ingredients);
         
         // Convertir le Set en tableau
         const uniqueIngredientsArray = [...uniqueIngredientsSet];
@@ -16,9 +19,7 @@ class TagFilters {
     }
     
     filteredAppliance() {
-        const allAppliances = this.recipes.map(recipe => recipe.appliance);
-        
-        const uniqueAppliancesSet = new Set(allAppliances);
+        const uniqueAppliancesSet = new Set(this.appliance);
         
         const uniqueAppliancesArray = [...uniqueAppliancesSet];
         
@@ -26,9 +27,7 @@ class TagFilters {
     }
 
     filteredUstensils() {
-        const allUstensils = this.recipes.flatMap(recipe => recipe.ustensils);
-
-        const uniqueUstensilsSet = new Set(allUstensils);
+        const uniqueUstensilsSet = new Set(this.ustensils);
         
         const uniqueUstensilsArray = [...uniqueUstensilsSet];
         
