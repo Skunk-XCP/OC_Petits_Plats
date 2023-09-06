@@ -48,18 +48,17 @@ function bindClickFilterItem() {
 
             const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
 
-
             // Mise à jour des recettes affichées
-            updateDisplayedRecipes(itemName, itemType);
+            updateDisplayedRecipes(itemName, itemType);        
 
             updateFilterItemsVisibility(recipesToShow);
 
         });
     });
+
 }
 
 function handleTags(itemName, itemType) {
-    activeTags.push({ type: itemType, name: itemName });
     const tagsContainer = document.getElementById("tags-container");
 
     // Vérifie si le tag existe déjà
@@ -87,10 +86,14 @@ function handleTags(itemName, itemType) {
     if (clickedItem) {
         clickedItem.classList.add('disabled');
     }
+    
+    
 }
 
 // Met à jour l'affichage des recettes en fonction des tags actifs
-function updateDisplayedRecipes(recipesToShow) {
+function updateDisplayedRecipes(itemName, itemType) {
+    activeTags.push({ type: itemType, name: itemName });
+    const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
 }
@@ -121,13 +124,10 @@ function filterItemsByValue(type) {
 
     const items = document.querySelectorAll(`.filter-item[data-type="${type}"]`);
 
-    // Si la valeur est < à 3 caractères, affiche tous les items
     if (filterValue.length < 3) {
-        items.forEach(item => item.classList.remove("hidden_item"));
         return;
     }
 
-    // Cache ou affiche chaque item selon s'il correspond à la valeur filtrée
     items.forEach(item => {
         if (compareWithoutAccents(item.innerHTML, filterValue)) {
             item.classList.remove("hidden_item");
@@ -186,7 +186,7 @@ function deleteActiveTag(itemName) {
     const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
-    updateFilterItemsVisibility(recipesToShow);  // ajoutée
+    updateFilterItemsVisibility(recipesToShow);  
 
     // Réactivez l'élément
     const clickedItem = document.querySelector(`.filter-item[data-item="${itemName}"]`);

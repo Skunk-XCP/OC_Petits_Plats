@@ -1,9 +1,8 @@
 class TagFilters {
     constructor(recipes){
         // Utiliser flatMap pour obtenir tous les ingrédients
-        this.ingredients = recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient));
+        this.ingredients = recipes.flatMap(recipe => recipe.ingredients.map(ing => ing.ingredient.toLowerCase()));
         this.appliance = recipes.map(recipe => recipe.appliance);
-        // this.ustensils = recipes.flatMap(recipe => recipe.ustensils.map(ustensil => this.ustensil.toLowerCase()));
         this.ustensils = recipes.flatMap(recipe => recipe.ustensils.map(ustensil => ustensil.toLowerCase()));
 
     }

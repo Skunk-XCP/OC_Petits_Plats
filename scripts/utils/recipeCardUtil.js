@@ -1,5 +1,5 @@
 function createRecipeDOMElement(recipe) {
-    
+
     return `
         <article class="recipe_article">
             <figure class="recipe_card">
