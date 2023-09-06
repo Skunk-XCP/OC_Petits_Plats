@@ -1,4 +1,5 @@
 function filterRecipes(query, tags, recipes) {
+console.log("🚀 ~ file: searchUtil.js:2 ~ filterRecipes ~ tags:", tags);
 
     let recipesFromSearchBar =  [];
     query = query.toLowerCase();
@@ -7,26 +8,33 @@ function filterRecipes(query, tags, recipes) {
         if(recipes[i].name.toLowerCase().includes(query) || 
         recipes[i].description.toLowerCase().includes(query) ||
         recipes[i].appliance.toLowerCase().includes(query)) {
-            recipesFromSearchBar.push(recipes[i])
+            if(!recipesFromSearchBar.includes(recipes[i])) {
+
+                recipesFromSearchBar.push(recipes[i])
+            }
         }
 
         for (let j = 0; j < recipes[i].ingredients.length; j++) {
             if(recipes[i].ingredients[j].ingredient.toLowerCase().includes(query)) {
-                recipesFromSearchBar.push(recipes[i])
+                if(!recipesFromSearchBar.includes(recipes[i])) {
+                    recipesFromSearchBar.push(recipes[i])
+                }
             }
         }
 
         for (let k = 0; k < recipes[i].ustensils.length; k++) {
             if(recipes[i].ustensils[k].toLowerCase().includes(query)) {
-                recipesFromSearchBar.push(recipes[i])
+                if(!recipesFromSearchBar.includes(recipes[i])) {
+                    recipesFromSearchBar.push(recipes[i])
+                }
             }
         }
     }
-
-    let uniqueRecipe = new Set([...recipesFromSearchBar])
+    
+    console.log("🚀 ~ file: searchUtil.js:5 ~ filterRecipes ~ recipesFromSearchBar:", recipesFromSearchBar);
     
 
-    return tags.length > 0 ? filterByTags(uniqueRecipe, tags) : uniqueRecipe;
+    return tags.length > 0 ? filterByTags(recipesFromSearchBar, tags) : recipesFromSearchBar;
 }
 
 // Filtre une liste de recettes en fonction des tags fournis
