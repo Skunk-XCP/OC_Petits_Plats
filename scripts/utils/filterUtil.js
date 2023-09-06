@@ -51,11 +51,10 @@ function bindClickFilterItem() {
             // Mise à jour des recettes affichées
             updateDisplayedRecipes(itemName, itemType);        
 
+            // MàJ liste items
             updateFilterItemsVisibility(recipesToShow);
-
         });
     });
-
 }
 
 function handleTags(itemName, itemType) {

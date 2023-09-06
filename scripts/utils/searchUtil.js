@@ -1,14 +1,32 @@
 function filterRecipes(query, tags, recipes) {
 
-    let recipesFromSearchBar =  recipes.filter(recipe => 
-        recipe.name.toLowerCase().includes(query) || 
-        recipe.description.toLowerCase().includes(query) ||
-        recipe.appliance.toLowerCase().includes(query) ||
-        recipe.ustensils.some(utensil => utensil.toLowerCase().includes(query)) ||
-        recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query))
-    );
+    let recipesFromSearchBar =  [];
+    query = query.toLowerCase();
 
-    return tags.length > 0 ? filterByTags(recipesFromSearchBar, tags) : recipesFromSearchBar;
+    for (let i = 0; i < recipes.length; i++) {
+        if(recipes[i].name.toLowerCase().includes(query) || 
+        recipes[i].description.toLowerCase().includes(query) ||
+        recipes[i].appliance.toLowerCase().includes(query)) {
+            recipesFromSearchBar.push(recipes[i])
+        }
+
+        for (let j = 0; j < recipes[i].ingredients.length; j++) {
+            if(recipes[i].ingredients[j].ingredient.toLowerCase().includes(query)) {
+                recipesFromSearchBar.push(recipes[i])
+            }
+        }
+
+        for (let k = 0; k < recipes[i].ustensils.length; k++) {
+            if(recipes[i].ustensils[k].toLowerCase().includes(query)) {
+                recipesFromSearchBar.push(recipes[i])
+            }
+        }
+    }
+
+    let uniqueRecipe = new Set([...recipesFromSearchBar])
+    
+
+    return tags.length > 0 ? filterByTags(uniqueRecipe, tags) : uniqueRecipe;
 }
 
 // Filtre une liste de recettes en fonction des tags fournis
