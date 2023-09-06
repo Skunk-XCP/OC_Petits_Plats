@@ -1,5 +1,4 @@
 function filterRecipes(query, tags, recipes) {
-console.log("🚀 ~ file: searchUtil.js:2 ~ filterRecipes ~ tags:", tags);
 
     let recipesFromSearchBar =  [];
     query = query.toLowerCase();
@@ -31,9 +30,6 @@ console.log("🚀 ~ file: searchUtil.js:2 ~ filterRecipes ~ tags:", tags);
         }
     }
     
-    console.log("🚀 ~ file: searchUtil.js:5 ~ filterRecipes ~ recipesFromSearchBar:", recipesFromSearchBar);
-    
-
     return tags.length > 0 ? filterByTags(recipesFromSearchBar, tags) : recipesFromSearchBar;
 }
 
