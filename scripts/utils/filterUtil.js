@@ -31,7 +31,7 @@ function filter(type, items) {
 
 function bindClickFilterItem() {
     const filterItems = document.getElementsByClassName("filter-item");
-    
+
     // Converti HTMLCollection en Array
     Array.from(filterItems).forEach(item => {
         item.addEventListener("click", function () {
@@ -49,14 +49,13 @@ function bindClickFilterItem() {
             const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
 
             // Mise à jour des recettes affichées
-            updateDisplayedRecipes(itemName, itemType);        
+            updateDisplayedRecipesByTag(itemName, itemType);
 
             updateFilterItemsVisibility(recipesToShow);
-
         });
     });
-
 }
+
 
 function handleTags(itemName, itemType) {
     const tagsContainer = document.getElementById("tags-container");
@@ -66,7 +65,7 @@ function handleTags(itemName, itemType) {
     for (let i = 0; i < existingTags.length; i++) {
         if (existingTags[i].textContent.includes(itemName)) {
             // Si le tag existe déjà, nous sortons de la fonction
-            return; 
+            return;
         }
     }
 
@@ -81,21 +80,21 @@ function handleTags(itemName, itemType) {
     tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
     deleteActiveTag(tagsContainer.lastElementChild);
 
+    activeTags.push({ type: itemType, name: itemName.trim() });
+
     // Désactive l'élément
     const clickedItem = document.querySelector(`.filter-item[data-type="${itemType}"][data-item="${itemName}"]`);
     if (clickedItem) {
         clickedItem.classList.add('disabled');
     }
-    
-    
 }
 
 // Met à jour l'affichage des recettes en fonction des tags actifs
-function updateDisplayedRecipes(itemName, itemType) {
-    activeTags.push({ type: itemType, name: itemName });
+function updateDisplayedRecipesByTag() {
     const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
+    itemListsFilteredByTag(recipesToShow)
 }
 
 
@@ -125,15 +124,56 @@ function filterItemsByValue(type) {
     const items = document.querySelectorAll(`.filter-item[data-type="${type}"]`);
 
     if (filterValue.length < 3) {
+        items.forEach(item => {
+            item.classList.remove("hidden_item");  // Montrer tous les éléments si moins de 3 caractères
+        });
         return;
     }
 
     items.forEach(item => {
         if (compareWithoutAccents(item.innerHTML, filterValue)) {
-            item.classList.remove("hidden_item");
+            item.classList.remove("hidden_item");  // Montrer l'élément si il correspond
         } else {
-            item.classList.add("hidden_item");
+            item.classList.add("hidden_item");  // Cacher l'élément si il ne correspond pas
         }
+    });
+}
+
+
+function itemListsFilteredByTag(displayedRecipes) {
+    console.log('called');
+    const filterTypes = ['ingredients', 'ustensils', 'appliance'];
+    
+    filterTypes.forEach(type => {
+        const uniqueValues = new Set();
+        
+        // Crée un ensemble des valeurs uniques pour le type actuel dans les recettes affichées
+        displayedRecipes.forEach(recipe => {
+            if (type === 'ingredients') {
+                recipe.ingredients.forEach(ingredient => {
+                    uniqueValues.add(ingredient.ingredient.toLowerCase());
+                });
+            } else if (type === 'ustensils') {
+                recipe.ustensils.forEach(utensil => {
+                    uniqueValues.add(utensil.toLowerCase());
+                });
+            } else if (type === 'appliance') {
+                uniqueValues.add(recipe.appliance.toLowerCase());
+            }
+        });
+        
+        // Trouver le conteneur d'items pour ce type
+        const itemListContainer = document.querySelector(`#${type}_filter .items-list`);
+        
+        // Réinitialiser le conteneur d'items
+        itemListContainer.innerHTML = '';
+
+        // Recréer la liste d'items basée sur les valeurs uniques trouvées
+        uniqueValues.forEach(value => {
+            const itemHTML = `<a class="filter-item" data-type="${type}" data-item="${value}">${value}</a>`;
+            itemListContainer.insertAdjacentHTML('beforeend', itemHTML);
+        });
+
     });
 }
 
@@ -151,7 +191,11 @@ function deleteInputTagFilter(type) {
         updateEraseButtonVisibility();
     });
 
-    inputField.addEventListener('input', updateEraseButtonVisibility);
+    inputField.addEventListener('input', () => {
+       
+        updateEraseButtonVisibility()
+        handleSearchInput({ target: inputField })
+    })
 
     function updateEraseButtonVisibility() {
         if (inputField.value.length === 0) {
@@ -178,7 +222,7 @@ function deleteActiveTag(itemName) {
     tags.forEach(tag => {
         if (tag.textContent.trim() === itemName) {
             // supprime le tag du DOM
-            tag.remove(); 
+            tag.remove();
         }
     });
 
@@ -186,7 +230,9 @@ function deleteActiveTag(itemName) {
     const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
     updateRecipesDisplay(recipesToShow);
     updateRecipeCountSpan(recipesToShow.length);
-    updateFilterItemsVisibility(recipesToShow);  
+    updateFilterItemsVisibility(recipesToShow);
+    itemListsFilteredByTag(recipesToShow)
+
 
     // Réactivez l'élément
     const clickedItem = document.querySelector(`.filter-item[data-item="${itemName}"]`);
@@ -195,9 +241,10 @@ function deleteActiveTag(itemName) {
     }
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     if (event.target.closest('.tag__erase')) {
         const itemName = event.target.closest('.tag').textContent.trim();
         deleteActiveTag(itemName);
     }
 });
+
