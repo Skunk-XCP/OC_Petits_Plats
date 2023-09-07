@@ -141,7 +141,6 @@ function filterItemsByValue(type) {
 
 
 function itemListsFilteredByTag(displayedRecipes) {
-    console.log('called');
     const filterTypes = ['ingredients', 'ustensils', 'appliance'];
     
     filterTypes.forEach(type => {
@@ -162,13 +161,13 @@ function itemListsFilteredByTag(displayedRecipes) {
             }
         });
         
-        // Trouver le conteneur d'items pour ce type
+        // Trouve le conteneur d'items pour ce type
         const itemListContainer = document.querySelector(`#${type}_filter .items-list`);
         
-        // Réinitialiser le conteneur d'items
+        // Réinitialise le conteneur d'items
         itemListContainer.innerHTML = '';
 
-        // Recréer la liste d'items basée sur les valeurs uniques trouvées
+        // Recrée la liste d'items basée sur les valeurs uniques trouvées
         uniqueValues.forEach(value => {
             const itemHTML = `<a class="filter-item" data-type="${type}" data-item="${value}">${value}</a>`;
             itemListContainer.insertAdjacentHTML('beforeend', itemHTML);
@@ -234,7 +233,7 @@ function deleteActiveTag(itemName) {
     itemListsFilteredByTag(recipesToShow)
 
 
-    // Réactivez l'élément
+    // Réactive l'élément
     const clickedItem = document.querySelector(`.filter-item[data-item="${itemName}"]`);
     if (clickedItem) {
         clickedItem.classList.remove('disabled');

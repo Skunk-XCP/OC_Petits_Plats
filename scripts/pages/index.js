@@ -8,7 +8,9 @@ async function getRecipes() {
 }
 
 function init() {
+    // Appel de la fonction getRecipes pour obtenir des recettes
     getRecipes()
+    // Traitement lorsque la promesse est résolue
         .then((recipes) => {
             displayRecipes(recipes);
 
@@ -17,6 +19,8 @@ function init() {
             const ingredientList = tagFilters.filteredIngredients();
             const applianceList = tagFilters.filteredAppliance();
             const utensilList = tagFilters.filteredUstensils();
+
+            // Boucle pour afficher les filtres sur la base des listes filtrées
             filters.forEach(filter => {
 
                 if (filter === "ingredients") {

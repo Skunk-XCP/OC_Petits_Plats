@@ -6,21 +6,21 @@ function toggleFilter() {
     }
 
     filterBoxes.forEach(filterBox => {
-        filterBox.addEventListener('click', function(event) {
+        filterBox.addEventListener('click', function (event) {
             const chevron = filterBox.querySelector('i');
             const typeList = filterBox.querySelector('.type_list');
             const itemList = filterBox.querySelector('.items-list');
-            const searchBarFilter = filterBox.querySelector('.searchBar_filter'); 
+            const searchBarFilter = filterBox.querySelector('.searchBar_filter');
+            const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
+            const eraseButton = document.querySelectorAll(".search-tag__erase");
+
 
 
             if (event.target.closest('.filter-item')) {
-                // Si un tag (filter-item) est cliqué, masque le type_list et items-list
+                // Si un tag est cliqué, masque le type_list et items-list
                 typeList.classList.remove('visible');
                 itemList.classList.remove('visible');
                 filterBox.classList.remove('expanded');
-                // if (searchBarFilter) {
-                //     searchBarFilter.value = '';
-                // }
                 if (chevron) {
                     chevron.style.transform = 'rotate(0deg)';
                 }
@@ -40,8 +40,16 @@ function toggleFilter() {
             itemList.classList.toggle('visible');
 
             // Clear l'input si la liste d'items se referme
-            if (!filterBox.classList.contains('expanded') && searchBarFilter) {
+            if (!filterBox.classList.contains('expanded')) {
                 searchBarFilter.value = '';
+                for (let i = 0; i < eraseButton.length; i++) {
+                    if(!eraseButton[i].classList.contains('hidden'))  {
+                        eraseButton[i].classList.add('hidden');
+                    }                  
+                }
+                updateRecipesDisplay(recipesToShow);
+                updateRecipeCountSpan(recipesToShow.length);
+                itemListsFilteredByTag(recipesToShow)
             }
 
             // Toggle l'icône
@@ -53,20 +61,25 @@ function toggleFilter() {
                 }
             }
 
-            document.addEventListener('click', function(event) {
+            document.addEventListener('click', function (event) {
                 const isClickInside = filterBox.contains(event.target);
-            
+
                 if (!isClickInside) {
-                    // Fermer la liste et réinitialiser l'input
+                    // Fermer la liste et réinitialiser l'input 
+                    // en cliquant à l'extérieur du bouton
                     typeList.classList.remove('visible');
                     itemList.classList.remove('visible');
-                    filterBox.classList.remove('expanded'); 
-                    if (chevron) {
-                        chevron.style.transform = 'rotate(0deg)';
+                    filterBox.classList.remove('expanded');
+                    searchBarFilter.value = '';
+                    for (let i = 0; i < eraseButton.length; i++) {
+                        if(!eraseButton[i].classList.contains('hidden'))  {
+                            eraseButton[i].classList.add('hidden');
+                        }                  
                     }
-                    if (searchBarFilter) {
-                        searchBarFilter.value = '';
-                    }
+                    chevron.style.transform = 'rotate(0deg)';
+                    updateRecipesDisplay(recipesToShow);
+                    updateRecipeCountSpan(recipesToShow.length);
+                    itemListsFilteredByTag(recipesToShow)
                 }
             });
         });
