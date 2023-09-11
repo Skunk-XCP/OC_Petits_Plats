@@ -16,15 +16,14 @@ function handleSearchInput(event) {
     // Si la requête contient moins de 3 caractères, affiche toutes les recettes
     recipesToShow = (query.length >= 3) ? filterRecipes(query, activeTags, allRecipes) : allRecipes;
 
-    updateRecipesDisplay(recipesToShow);
-    updateRecipeCountSpan(recipesToShow.length); 
-    updateFilterItemsVisibility(recipesToShow); 
+    updateFiltersAndRecipes(recipesToShow);
 }
-
 
 // Permet d'effacer le texte dans la barre de recherche
 function clearInput() {
+
     inputSearch.value = '';
     handleSearchInput({ target: inputSearch });
     inputSearch.focus();
 }
+

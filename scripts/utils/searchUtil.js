@@ -71,3 +71,25 @@ function updateFilterItemsVisibility(displayedRecipes) {
     });
 }
 
+// Fonction qui permet de garder le tag actif lorsqu'on
+// efface la valeur de l'input
+function handleSearchInput(event) {
+    // Récupère la valeur saisie par l'utilisateur
+    const query = event.target.value.toLowerCase();
+    let recipesToShow;
+
+    // Si la longueur de la requête est égale à 0 -> ajout classe hidden
+    eraseButton.classList.toggle('hidden', query.length === 0);
+
+    // Filtre les recettes en fonction de la requête et des tags actifs
+    if (query.length >= 3) {
+        recipesToShow = filterRecipes(query, activeTags, allRecipes);
+    } else {
+        // Si la requête contient moins de 3 caractères, affiche les recettes qui correspondent aux tags actifs
+        recipesToShow = activeTags.length > 0 ? filterByTags(allRecipes, activeTags) : allRecipes;
+    }
+
+    updateFiltersAndRecipes(recipesToShow);
+}
+
+

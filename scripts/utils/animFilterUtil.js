@@ -15,7 +15,6 @@ function toggleFilter() {
             const eraseButton = document.querySelectorAll(".search-tag__erase");
 
 
-
             if (event.target.closest('.filter-item')) {
                 // Si un tag est cliqué, masque le type_list et items-list
                 typeList.classList.remove('visible');
@@ -47,9 +46,7 @@ function toggleFilter() {
                         eraseButton[i].classList.add('hidden');
                     }                  
                 }
-                updateRecipesDisplay(recipesToShow);
-                updateRecipeCountSpan(recipesToShow.length);
-                itemListsFilteredByTag(recipesToShow)
+                updateFiltersAndRecipes(recipesToShow);
             }
 
             // Toggle l'icône
@@ -60,28 +57,6 @@ function toggleFilter() {
                     chevron.style.transform = 'rotate(0deg)';
                 }
             }
-
-            document.addEventListener('click', function (event) {
-                const isClickInside = filterBox.contains(event.target);
-
-                if (!isClickInside) {
-                    // Fermer la liste et réinitialiser l'input 
-                    // en cliquant à l'extérieur du bouton
-                    typeList.classList.remove('visible');
-                    itemList.classList.remove('visible');
-                    filterBox.classList.remove('expanded');
-                    searchBarFilter.value = '';
-                    for (let i = 0; i < eraseButton.length; i++) {
-                        if(!eraseButton[i].classList.contains('hidden'))  {
-                            eraseButton[i].classList.add('hidden');
-                        }                  
-                    }
-                    chevron.style.transform = 'rotate(0deg)';
-                    updateRecipesDisplay(recipesToShow);
-                    updateRecipeCountSpan(recipesToShow.length);
-                    itemListsFilteredByTag(recipesToShow)
-                }
-            });
         });
     });
 }
