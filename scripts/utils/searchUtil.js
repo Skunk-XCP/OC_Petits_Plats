@@ -32,7 +32,7 @@ function filterByTags(recipes, tags) {
 }
 
 
-//MàJ de la span qui affiche le nombre des recettes en fonction du nombre donné
+
 function updateFilterItemsVisibility(displayedRecipes) {
     const filterTypes = ['ingredients', 'ustensils', 'appliance'];
     
@@ -70,6 +70,10 @@ function updateFilterItemsVisibility(displayedRecipes) {
         });
     });
 }
+
+
+
+
 
 // Fonction qui permet de garder le tag actif lorsqu'on
 // efface la valeur de l'input

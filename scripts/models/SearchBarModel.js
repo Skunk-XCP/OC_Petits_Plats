@@ -26,4 +26,3 @@ function clearInput() {
     handleSearchInput({ target: inputSearch });
     inputSearch.focus();
 }
-

@@ -1,11 +1,46 @@
 function toggleFilter() {
     const filterBoxes = document.querySelectorAll('.filterBox');
 
+
     if (!filterBoxes.length) {
         return;
     }
 
     filterBoxes.forEach(filterBox => {
+
+        filterBox.setAttribute('tabindex', '0');
+        const searchBarFilter = filterBox.querySelector('.searchBar_filter');
+        const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
+
+
+        // Ajoutez un écouteur focusout ici pour éviter d'ajouter des écouteurs multiples
+        filterBox.addEventListener('focusout', function () {
+            // Utilisez setTimeout pour permettre au navigateur de définir document.activeElement
+            setTimeout(() => {
+                // Vérifie si le nouvel élément actif est un descendant de filterBox
+                if (!filterBox.contains(document.activeElement)) {
+                    // code pour fermer la liste
+                    filterBox.classList.remove('expanded');
+                    const typeList = filterBox.querySelector('.type_list');
+                    const itemList = filterBox.querySelector('.items-list');
+                    const chevron = filterBox.querySelector('i');
+                    if (typeList) typeList.classList.remove('visible');
+                    if (itemList) itemList.classList.remove('visible');
+                    if (chevron) chevron.style.transform = 'rotate(0deg)';
+
+                    searchBarFilter.value = '';
+                    for (let i = 0; i < eraseButton.length; i++) {
+                        if (!eraseButton[i].classList.contains('hidden')) {
+                            eraseButton[i].classList.add('hidden');
+                        }
+                    }
+
+                    updateFiltersAndRecipes(recipesToShow);
+                }
+            }, 0);
+        });
+
+
         filterBox.addEventListener('click', function (event) {
             const chevron = filterBox.querySelector('i');
             const typeList = filterBox.querySelector('.type_list');
@@ -42,9 +77,9 @@ function toggleFilter() {
             if (!filterBox.classList.contains('expanded')) {
                 searchBarFilter.value = '';
                 for (let i = 0; i < eraseButton.length; i++) {
-                    if(!eraseButton[i].classList.contains('hidden'))  {
+                    if (!eraseButton[i].classList.contains('hidden')) {
                         eraseButton[i].classList.add('hidden');
-                    }                  
+                    }
                 }
                 updateFiltersAndRecipes(recipesToShow);
             }
@@ -57,6 +92,7 @@ function toggleFilter() {
                     chevron.style.transform = 'rotate(0deg)';
                 }
             }
+
         });
     });
 }
