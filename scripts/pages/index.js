@@ -7,6 +7,7 @@ async function getRecipes() {
     return recipes;
 }
 
+
 function init() {
     // Appel de la fonction getRecipes pour obtenir des recettes
     getRecipes()

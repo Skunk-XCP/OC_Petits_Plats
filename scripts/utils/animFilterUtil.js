@@ -13,9 +13,9 @@ function toggleFilter() {
         const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
 
 
-        // Ajoutez un écouteur focusout ici pour éviter d'ajouter des écouteurs multiples
+        // Ajoute un écouteur focusout pour éviter d'ajouter des écouteurs multiples
         filterBox.addEventListener('focusout', function () {
-            // Utilisez setTimeout pour permettre au navigateur de définir document.activeElement
+            // Utilise setTimeout pour permettre au navigateur de définir document.activeElement
             setTimeout(() => {
                 // Vérifie si le nouvel élément actif est un descendant de filterBox
                 if (!filterBox.contains(document.activeElement)) {

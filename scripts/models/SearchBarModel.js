@@ -1,28 +1,37 @@
-const eraseButton = document.querySelector(".search-bar__erase");
+const eraseButtons = document.querySelector(".search-bar__erase");
+eraseButtons.addEventListener('click', clearInput);
+
 const inputSearch = document.querySelector("#search-bar");
 inputSearch.addEventListener('input', handleSearchInput);
-eraseButton.addEventListener("click", clearInput);
 
 
+// Fonction lorsqu'une valeur est entrée dans la barre de recherche
 function handleSearchInput(event) {
-    // Récupère la valeur saisie par l'utilisateur
+    // Conversion en minuscules de la chaîne entrée par l'utilisateur   
     const query = event.target.value.toLowerCase();
     let recipesToShow;
 
-    // Si la longueur de la requête est égale à 0 -> ajout classe hidden
+    // Active/désactive la classe "hidden" selon si la requête est vide ou non
+    const eraseButton = document.querySelector('#eraseButton');
     eraseButton.classList.toggle('hidden', query.length === 0);
 
-    // Filtre les recettes en fonction de la requête
-    // Si la requête contient moins de 3 caractères, affiche toutes les recettes
+    // Filtre les recettes si requête >= à 3 caractères
     recipesToShow = (query.length >= 3) ? filterRecipes(query, activeTags, allRecipes) : allRecipes;
 
+    // MàJ liste recettes affichées et filtres actifs
     updateFiltersAndRecipes(recipesToShow);
 }
 
-// Permet d'effacer le texte dans la barre de recherche
-function clearInput() {
 
-    inputSearch.value = '';
-    handleSearchInput({ target: inputSearch });
-    inputSearch.focus();
+// Fonction pour effacer le contenu de la barre de recherche
+function clearInput() {
+    const inputField = document.querySelector('#search-bar');
+    
+    // Réinitialisation de la valeur de la barre de recherche
+    inputField.value = '';
+
+    // Appel handleSearchInput pour MàJ l'état de l'application 
+    // en fonction de la nouvelle valeur de la barre de recherche (qui est maintenant vide)
+    handleSearchInput({ target: inputField });
+    inputField.focus();
 }
