@@ -54,10 +54,6 @@ async function displayFilter(type, itemList) {
     const filterHTML = filter(type, itemList);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
-
-    deleteInputTagFilter(type);
-    handleFilterTagsInput(type);
-    filterItemsByValue(type);
 }
 
 

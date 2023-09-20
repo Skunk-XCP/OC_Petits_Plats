@@ -35,6 +35,10 @@ function init() {
             
             toggleFilter();
             bindClickFilterItem();
+            bindInputFiltering();
+            bindEraseButton();
+            bindDeleteTagButton();
+            
         })
 }
 

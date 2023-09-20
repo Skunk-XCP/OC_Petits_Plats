@@ -6,145 +6,123 @@ const translations = {
 
 let activeTags = [];
 
-function filter(type, items) {
-    const translatedType = translations[type] || type;
-    const listItems = items.map(item => `<a class="filter-item" data-type="${type}" data-item="${item}">${item} </a>`).join('');
 
-    let htmlContent = `
-        <div id="${type}_filter" class="filterBox" data-type="${type}">
-            <button type="button" class="toggle">${translatedType} </button> <i class="fa-solid fa-chevron-down chevron"></i>
-            <div id="${type}_list" class="type_list">
-                <label for="${type}"></label>
-                <input type="text" id="${type}" class="searchBar_filter">
-                <button class="search-tag__erase hidden" type="button"><i class="fa-solid fa-xmark"></i></button>
-                <img class="search-tag__magnifying-glass" src="/assets/images/search-valid.svg" alt="Icone loupe">
-            </div>
-
-            <div class="items-list">
-                ${listItems}
-            </div>
-        </div>
-    `;
-
-    return htmlContent;
+// Fonction pour gérer les clics sur les éléments filtrables
+function clickHandler(event) {
+    const itemType = event.currentTarget.getAttribute('data-type');
+    const itemValue = event.currentTarget.getAttribute('data-item');
+    
+    // Appelle la fonction handleTags pour gérer la logique des tags
+    handleTags(itemValue, itemType);
 }
 
-function bindClickFilterItem() {
-    const filterItems = document.getElementsByClassName("filter-item");
 
-    // Converti HTMLCollection en Array
-    Array.from(filterItems).forEach(item => {
-        item.addEventListener("click", function () {
-            const itemName = this.dataset.item;
-            const itemType = this.dataset.type;
-
-            // Si l'élément est désactivé, ignorez le clic
-            if (this.classList.contains('disabled')) {
-                return;
-            }
-
-            // Gestion des tags
-            handleTags(itemName, itemType);
-
-            const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
-
-            // Mise à jour des recettes affichées
-            updateDisplayedRecipesByTag(itemName, itemType);
-
-            updateFilterItemsVisibility(recipesToShow);
-        });
+// Fonction pour attacher les écouteurs d'événements aux éléments filtrables
+  function bindClickFilterItem() {
+    const filterItems = document.querySelectorAll('.filter-item');
+  
+    // Attache un écouteur d'événement click à chaque élément filtrable
+    filterItems.forEach((item) => {
+      item.addEventListener('click', clickHandler);
     });
-}
+  }
 
 
+// Fonction pour gérer la logique des tags
 function handleTags(itemName, itemType) {
     const tagsContainer = document.getElementById("tags-container");
-
-    // Vérifie si le tag existe déjà
-    const existingTags = tagsContainer.querySelectorAll('.tag');
+    // Variable pour vérifier si le tag existe déjà
     let tagExists = false;
+
+    const existingTags = tagsContainer.querySelectorAll('.tag');
+
+    // Parcoure les tags existants pour vérifier si le tag existe déjà
     existingTags.forEach((existingTag) => {
         if (existingTag.textContent.includes(itemName)) {
-            // Si le tag existe déjà, nous mettons le flag à true et sortons de la boucle
             tagExists = true;
-            return;
-        }
+            existingTag.remove();
+            const index = activeTags.indexOf(itemName);
+
+            // Supprime le tag du tableau activeTags
+            if (index > -1) {
+                activeTags.splice(index, 1);
+            } 
+        } 
     });
 
     if (tagExists) {
-        return;
+        // Réactive l'élément qui a été désactivé
+        const reactivatedItem = document.querySelector(`.filter-item[data-type="${itemType}"][data-item="${itemName}"]`);
+  
+        if (reactivatedItem) {
+            reactivatedItem.classList.remove('disabled_item');
+            reactivatedItem.addEventListener('click', clickHandler);
+        }
+    } else {
+        // Si le tag n'existe pas, en créer un nouveau
+        const newTag = createTagMarkup(itemName);
+        tagsContainer.insertAdjacentHTML('beforeend', newTag);
+
+        // Ajoute le nouveau tag au tableau activeTags
+        activeTags.push(itemName);
     }
 
-    const tagMarkup = `
-        <span class="tag">${itemName}
-            <button class="tag__erase" type="button">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </span>
-    `;
-
-    tagsContainer.insertAdjacentHTML('beforeend', tagMarkup);
-    deleteActiveTag(tagsContainer.lastElementChild);
-
-    activeTags.push({ type: itemType, name: itemName.trim() });
-
-    // Désactive l'élément
-    const clickedItem = document.querySelector(`.filter-item[data-type="${itemType}"][data-item="${itemName}"]`);
-    if (clickedItem) {
-        clickedItem.classList.add('disabled');
-    }
-}
-
-// Met à jour l'affichage des recettes en fonction des tags actifs
-function updateDisplayedRecipesByTag() {
-    const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
-    updateFiltersAndRecipes(recipesToShow);
+    // Met à jour les recettes affichées en fonction des tags actifs
+    updateDisplayedRecipes(inputSearch.value.toLowerCase(), activeTags);
 }
 
 
-// Compare deux chaînes de caractères après avoir supprimé les accents 
-// et les avoir transformées en minuscules
-function compareWithoutAccents(str1, str2) {
-    const normalizedStr1 = str1.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    const normalizedStr2 = str2.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    return normalizedStr1.includes(normalizedStr2);
-}
+// Fonction pour attacher un écouteur d'événement sur le bouton de suppression d'un tag
+function bindDeleteTagButton() {
+    const tagsContainer = document.getElementById("tags-container");
+    tagsContainer.addEventListener('click', function(event) {
 
+        if (event.target.closest('.tag__erase')) {
 
-// Attache un gestionnaire d'événements à un élément d'entrée 
-// pour filtrer les items en fonction de sa valeur
-function handleFilterTagsInput(type) {
-    const inputElement = document.getElementById(type);
-    inputElement.addEventListener('keyup', () => filterItemsByValue(type));
-}
+            // Si le bouton de suppression d'un tag est cliqué
+            const tagElement = event.target.closest('.tag');
 
+            // Nom du tag à supprimer
+            const tagName = tagElement.textContent.trim();
 
-// Filtre les items basé sur la valeur d'un élément d'entrée
-function filterItemsByValue(type) {
-    const inputElement = document.getElementById(type);
-    const filterValue = inputElement.value;
-
-    const items = document.querySelectorAll(`.filter-item[data-type="${type}"]`);
-
-    if (filterValue.length < 3) {
-        items.forEach(item => {
-            item.classList.remove("hidden_item");
-        });
-        return;
-    }
-
-    items.forEach(item => {
-        if (compareWithoutAccents(item.innerHTML, filterValue)) {
-            item.classList.remove("hidden_item");
-        } else {
-            item.classList.add("hidden_item");
+            // Supprime le tag actif
+            deleteActiveTag(tagName);
         }
     });
 }
 
+// Fonction pour supprimer un tag actif
+function deleteActiveTag(tagName) {
+    const index = activeTags.indexOf(tagName);
+    if (index !== -1) {
+        // Supprime le tag du tableau activeTags
+        activeTags.splice(index, 1);
+    }
 
-function itemListsFilteredByTag(displayedRecipes) {
+    // Supprime le tag du DOM
+    const tags = document.querySelectorAll('.tag');
+    tags.forEach(tag => {
+        if (tag.textContent.trim().includes(tagName)) {
+            tag.remove();
+        }
+    });
+
+    // Réactive le clic sur l'élément qui a été désactivé
+    const filterItem = document.querySelector(`.filter-item[data-item="${tagName}"]`);
+  if (filterItem) {
+    filterItem.classList.remove('disabled_item');
+    filterItem.addEventListener('click', clickHandler);
+  }
+
+    // Met à jour les recettes affichées en fonction des tags actifs
+    const query = document.querySelector("#search-bar").value.toLowerCase();
+    updateDisplayedRecipes(query, activeTags);
+}
+
+
+
+function updateFilterItems(displayedRecipes) {
     const filterTypes = ['ingredients', 'ustensils', 'appliance'];
     
     filterTypes.forEach(type => {
@@ -182,79 +160,101 @@ function itemListsFilteredByTag(displayedRecipes) {
 }
 
 
-// Supprime la valeur d'un élément d'entrée et met à jour la liste des items en conséquence
-function deleteInputTagFilter(type) {
-    const eraseButton = document.querySelector(`#${type}_filter .search-tag__erase`);
-    const inputField = document.querySelector(`#${type}_filter .searchBar_filter`);
 
-    // Lorsque le bouton d'effacement est cliqué, 
-    // la valeur de l'input est supprimée et les items sont mis à jour
-    eraseButton.addEventListener('click', function () {
-        inputField.value = '';
-        filterItemsByValue(type);
-        updateEraseButtonVisibility();
-    });
 
-    inputField.addEventListener('input', () => {
-       
-        updateEraseButtonVisibility()
-        handleSearchInput({ target: inputField })
-    })
+// Cette fonction sera utilisée pour filtrer les items affichés en fonction de la recherche
+function filterItemsBasedOnInput(inputElement) {
+    const filterBox = inputElement.closest('.filterBox');
+    const eraseButton = filterBox.querySelector('.search-tag__erase');
+    const itemList = filterBox.querySelector('.items-list');
 
-    function updateEraseButtonVisibility() {
-        if (inputField.value.length === 0) {
-            eraseButton.classList.add('hidden');
+    // Récupérer tous les items
+    const allItems = Array.from(itemList.querySelectorAll('.filter-item'));
+
+    // Récupérer la valeur de l'input
+    const inputValue = inputElement.value.toLowerCase();
+
+    // Afficher ou cacher le bouton erase en fonction de la longueur de la valeur de l'input
+    if (inputValue.length > 0) {
+        eraseButton.classList.remove('hidden');
+    } else {
+        eraseButton.classList.add('hidden');
+    }
+
+    // Masquer ou afficher chaque item en fonction de la correspondance avec la valeur de l'input
+    allItems.forEach(item => {
+        const itemValue = item.getAttribute('data-item');
+
+        if (compareWithoutAccents(itemValue, inputValue)) {
+            item.style.display = '';
         } else {
-            eraseButton.classList.remove('hidden');
-        }
-    }
-
-    // Initial check
-    updateEraseButtonVisibility();
-}
-
-
-function deleteActiveTag(itemName) {
-
-    // Supprime le tag du tableau activeTags.
-    const index = activeTags.findIndex(tag => tag.name === itemName);
-    if (index !== -1) {
-        activeTags.splice(index, 1);
-    }
-
-    // Supprime le tag visuellement affiché à l'utilisateur.
-    const tags = document.querySelectorAll('.tag');
-    tags.forEach(tag => {
-        if (tag.textContent.trim() === itemName) {
-            // supprime le tag du DOM
-            tag.remove();
+            item.style.display = 'none';
         }
     });
-
-    // Remet la liste de recettes à jour avec suppression d'un tag
-    const recipesToShow = filterRecipes(inputSearch.value, activeTags, allRecipes);
-    updateFiltersAndRecipes(recipesToShow);
-    itemListsFilteredByTag(recipesToShow);
-
-
-    // Réactive l'élément
-    const clickedItem = document.querySelector(`.filter-item[data-item="${itemName}"]`);
-    if (clickedItem) {
-        clickedItem.classList.remove('disabled');
-    }
 }
 
-function updateFiltersAndRecipes(recipesToShow) {
-    updateRecipesDisplay(recipesToShow);
-    updateRecipeCountSpan(recipesToShow.length);
-    updateFilterItemsVisibility(recipesToShow);
+// Compare deux chaînes de caractères après avoir supprimé les accents 
+// et les avoir transformées en minuscules
+function compareWithoutAccents(str1, str2) {
+    const normalizedStr1 = str1.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const normalizedStr2 = str2.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+    return normalizedStr1.includes(normalizedStr2);
 }
 
 
-document.addEventListener('click', function (event) {
-    if (event.target.closest('.tag__erase')) {
-        const itemName = event.target.closest('.tag').textContent.trim();
-        deleteActiveTag(itemName);
-    }
-});
+// Cette fonction ajoute les écouteurs d'événements aux inputs pour la recherche dynamique
+function bindInputFiltering() {
+    const inputs = document.querySelectorAll('.searchBar_filter');
+
+    inputs.forEach(input => {
+        input.addEventListener('input', (event) => {
+            const inputValue = event.target.value;
+            const filterBox = event.target.closest('.filterBox');
+            const eraseButton = filterBox.querySelector('.search-tag__erase');
+            
+            // Gérer la visibilité du bouton erase
+            if (inputValue.length === 0) {
+                eraseButton.classList.add('hidden');
+            } else {
+                eraseButton.classList.remove('hidden');
+            }
+
+            if (inputValue.length >= 3) {
+                filterItemsBasedOnInput(event.target);
+            } else {
+                // Si moins de 3 caractères sont présents, afficher tous les items
+                const itemList = filterBox.querySelector('.items-list');
+                const allItems = Array.from(itemList.querySelectorAll('.filter-item'));
+
+                allItems.forEach(item => {
+                    item.style.display = '';
+                });
+            }
+        });
+    });
+}
+
+
+
+function bindEraseButton() {
+    const eraseButtons = document.querySelectorAll('.search-tag__erase');
+
+    eraseButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const filterBox = event.target.closest('.filterBox');
+            const input = filterBox.querySelector('.searchBar_filter');
+
+            // Empeche la liste de se fermer lorsqu'on clique sur le bouton pour effacer
+            event.stopPropagation();
+            
+            // Effacer la valeur de l'input
+            input.value = '';
+            
+            // Appeler la fonction filterItemsBasedOnInput pour remettre à jour la liste des items et cacher le bouton erase
+            filterItemsBasedOnInput(input);
+        });
+    });
+}
+
 

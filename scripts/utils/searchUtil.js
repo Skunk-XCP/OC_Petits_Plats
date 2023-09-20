@@ -1,89 +1,66 @@
-function filterRecipes(query, tags, recipes) {
-
-    let recipesFromSearchBar = recipes.filter(recipe =>
-        recipe.name.toLowerCase().includes(query) ||
-        recipe.description.toLowerCase().includes(query) ||
-        recipe.appliance.toLowerCase().includes(query) ||
-        recipe.ustensils.some(utensil => utensil.toLowerCase().includes(query)) ||
-        recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query))
-    );
-
-    return tags.length > 0 ? filterByTags(recipesFromSearchBar, tags) : recipesFromSearchBar;
-}
-
-// Filtre une liste de recettes en fonction des tags fournis
-function filterByTags(recipes, tags) {
-    return recipes.filter(recipe => {
-        return tags.every(tag => {
-            // Si le tag est de type "ingrédients" et que la recette n'a pas cet ingrédient, 
-            // retourne false (exclut la recette)
-            if (tag.type === "ingredients") {
-                return recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase());
-            }
-            if (tag.type === "ustensils") {
-                return recipe.ustensils.some(utensil => utensil.toLowerCase() === tag.name.toLowerCase());
-            }
-            if (tag.type === "appliance") {
-                return recipe.appliance.toLowerCase() === tag.name.toLowerCase();
-            }
-            return false;
-        });
-    });
-}
+const inputSearch = document.querySelector("#search-bar");
+inputSearch.addEventListener('input', handleSearchInput);
+const eraseButtons = document.querySelector("#eraseButton");
+eraseButtons.addEventListener('click', clearInput);
 
 
-function updateFilterItemsVisibility(displayedRecipes) {
-    const filterTypes = ['ingredients', 'ustensils', 'appliance'];
-
-    filterTypes.forEach(type => {
-        // Récupère tous les items du type actuel
-        const items = document.querySelectorAll(`.filter-item[data-type="${type}"]`);
-
-        // Crée un ensemble des valeurs uniques pour le type actuel dans les recettes affichées
-        const uniqueValues = new Set();
-
-        displayedRecipes.forEach(recipe => {
-            if (type === 'ingredients') {
-                recipe.ingredients.forEach(ingredient => {
-                    uniqueValues.add(ingredient.ingredient.toLowerCase());
-                });
-
-            } else if (type === 'ustensils') {
-                recipe.ustensils.forEach(utensil => {
-                    uniqueValues.add(utensil.toLowerCase());
-                });
-
-            } else if (type === 'appliance') {
-                uniqueValues.add(recipe.appliance.toLowerCase());
-            }
-        });
-
-        // Cache ou affiche chaque item selon s'il apparaît dans les recettes affichées
-        items.forEach(item => {
-            const itemValue = item.getAttribute('data-item').toLowerCase();
-            if (uniqueValues.has(itemValue)) {
-                item.classList.remove("hidden_item");
-            } else {
-                item.classList.add("hidden_item");
-            }
-        });
-    });
-}
-
-
-function updateEraseButtonVisibility() {
-    const eraseButton = document.querySelector();
-    const inputField = document.querySelector();
-
-    eraseButton.addEventListener('click', function () {
-        inputField.value = '';
-        eraseButton.classList.add('hidden'); 
-    });
-
-    if (inputField.value.length === 0) {
-        eraseButton.classList.add('hidden');
+// Fonction qui permet d'effectuer une recherche
+function handleSearchInput(event) {
+    const query = event.target.value.toLowerCase();
+    
+    const eraseButton = document.querySelector('#eraseButton');
+    eraseButton.classList.toggle('hidden', query.length === 0);
+    
+    if (query.length >= 3 || activeTags.length > 0) {
+        updateDisplayedRecipes(query, activeTags);
     } else {
-        eraseButton.classList.remove('hidden');
+        updateDisplayedRecipes('', []);
     }
+}
+
+
+// Fonction pour filtrer les recettes selon la requête de l'utilisateur et/ou les tags appliqués
+function filterRecipes(query, recipes, activeTags) {
+    return recipes.filter(recipe => {
+        let matchesQuery = recipe.name.toLowerCase().includes(query) ||
+            recipe.description.toLowerCase().includes(query) ||
+            recipe.appliance.toLowerCase().includes(query) ||
+            recipe.ustensils.some(utensil => utensil.toLowerCase().includes(query)) ||
+            recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query));
+        
+        let matchesTags = activeTags.every(tag => 
+            recipe.name.includes(tag) ||
+            recipe.description.includes(tag) ||
+            recipe.appliance.includes(tag) ||
+            recipe.ustensils.includes(tag) ||
+            recipe.ingredients.some(ingredient => ingredient.ingredient.includes(tag))
+        );
+        
+        return matchesQuery && matchesTags;
+    });
+}
+
+
+function updateDisplayedRecipes(query, activeTags) {
+    let recipesToShow = allRecipes;
+
+    recipesToShow = filterRecipes(query, recipesToShow, activeTags);
+
+    updateRecipesDisplay(recipesToShow);
+    updateRecipeCountSpan(recipesToShow.length);
+    updateFilterItems(recipesToShow);
+}
+
+
+// Fonction pour effacer la valeur de l'input
+function clearInput() {
+    const inputField = document.querySelector('#search-bar');
+    
+    // Réinitialise la valeur de la barre de recherche
+    inputField.value = '';
+
+    // Appel à handleSearchInput pour mettre à jour l'affichage des recettes
+    updateDisplayedRecipes('', activeTags);
+    inputField.focus();
 }
 
