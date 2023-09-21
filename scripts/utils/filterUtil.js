@@ -86,11 +86,11 @@ function bindClickFilterItem() {
 
     filterItems.forEach((item) => {
         // Attache le nouvel écouteur d'événement
-        item.addEventListener('click', handleFilterItemClick);
+        item.addEventListener('click', createTagFromItem);
     });
 }
 
-function handleFilterItemClick(event) {
+function createTagFromItem(event) {
     const itemType = event.currentTarget.getAttribute('data-type');
     const itemName = event.currentTarget.getAttribute('data-item');
 
