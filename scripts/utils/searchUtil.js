@@ -12,9 +12,9 @@ function handleSearchInput(event) {
     eraseButton.classList.toggle('hidden', query.length === 0);
     
     if (query.length >= 3 || activeTags.length > 0) {
-        updateDisplayedRecipes(query, activeTags);
+        updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags);
     } else {
-        updateDisplayedRecipes('', []);
+        updateDisplayedRecipesAndCountSpanAndFilterItems('', []);
     }
 }
 
@@ -41,7 +41,7 @@ function filterRecipes(query, recipes, activeTags) {
 }
 
 
-function updateDisplayedRecipes(query, activeTags) {
+function updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags) {
     let recipesToShow = allRecipes;
 
     recipesToShow = filterRecipes(query, recipesToShow, activeTags);
@@ -60,7 +60,7 @@ function clearInput() {
     inputField.value = '';
 
     // Appel à handleSearchInput pour mettre à jour l'affichage des recettes
-    updateDisplayedRecipes('', activeTags);
+    updateDisplayedRecipesAndCountSpanAndFilterItems('', activeTags);
     inputField.focus();
 }
 

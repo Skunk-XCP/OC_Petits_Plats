@@ -352,11 +352,6 @@ main {
     background-color: #f1f1f1;
 }
 
-.disabled_item {
-    pointer-events: none;
-    opacity: 0.5;
-}
-
 
 
 /* ---- TAGS ---- */

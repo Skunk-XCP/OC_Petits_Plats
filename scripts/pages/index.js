@@ -11,7 +11,7 @@ async function getRecipes() {
 function init() {
     // Appel de la fonction getRecipes pour obtenir des recettes
     getRecipes()
-    // Traitement lorsque la promesse est résolue
+        // Traitement lorsque la promesse est résolue
         .then((recipes) => {
             displayRecipes(recipes);
 
@@ -32,13 +32,15 @@ function init() {
                     displayFilter(filter, utensilList)
                 }
             })
-            
-            toggleFilter();
+
+            const filterBoxes = document.querySelectorAll('.filterBox');
+            filterBoxes.forEach(filterBox => {
+                filterBox.addEventListener('click', filterBoxClickHandler);
+            });
+
             bindClickFilterItem();
             bindInputFiltering();
             bindEraseButton();
-            bindDeleteTagButton();
-            
         })
 }
 

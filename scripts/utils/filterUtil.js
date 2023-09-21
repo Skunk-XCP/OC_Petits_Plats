@@ -8,92 +8,34 @@ let activeTags = [];
 
 
 // Fonction pour gérer les clics sur les éléments filtrables
-function clickHandler(event) {
+function addTag(event) {
     const itemType = event.currentTarget.getAttribute('data-type');
-    const itemValue = event.currentTarget.getAttribute('data-item');
-    
-    // Appelle la fonction handleTags pour gérer la logique des tags
-    handleTags(itemValue, itemType);
-}
+    const itemName = event.currentTarget.getAttribute('data-item');
 
-
-// Fonction pour attacher les écouteurs d'événements aux éléments filtrables
-  function bindClickFilterItem() {
-    const filterItems = document.querySelectorAll('.filter-item');
-  
-    // Attache un écouteur d'événement click à chaque élément filtrable
-    filterItems.forEach((item) => {
-      item.addEventListener('click', clickHandler);
-    });
-  }
-
-
-// Fonction pour gérer la logique des tags
-function handleTags(itemName, itemType) {
-    const tagsContainer = document.getElementById("tags-container");
-    // Variable pour vérifier si le tag existe déjà
-    let tagExists = false;
-
-    const existingTags = tagsContainer.querySelectorAll('.tag');
-
-    // Parcoure les tags existants pour vérifier si le tag existe déjà
-    existingTags.forEach((existingTag) => {
-        if (existingTag.textContent.includes(itemName)) {
-            tagExists = true;
-            existingTag.remove();
-            const index = activeTags.indexOf(itemName);
-
-            // Supprime le tag du tableau activeTags
-            if (index > -1) {
-                activeTags.splice(index, 1);
-            } 
-        } 
-    });
-
-    if (tagExists) {
-        // Réactive l'élément qui a été désactivé
-        const reactivatedItem = document.querySelector(`.filter-item[data-type="${itemType}"][data-item="${itemName}"]`);
-  
-        if (reactivatedItem) {
-            reactivatedItem.classList.remove('disabled_item');
-            reactivatedItem.addEventListener('click', clickHandler);
-        }
-    } else {
-        // Si le tag n'existe pas, en créer un nouveau
-        const newTag = createTagMarkup(itemName);
-        tagsContainer.insertAdjacentHTML('beforeend', newTag);
-
-        // Ajoute le nouveau tag au tableau activeTags
-        activeTags.push(itemName);
+    // Evite de créer plusieurs fois le meme tag
+    if (activeTags.includes(itemName)) {
+        return;
     }
 
-    // Met à jour les recettes affichées en fonction des tags actifs
-    updateDisplayedRecipes(inputSearch.value.toLowerCase(), activeTags);
-}
-
-
-
-// Fonction pour attacher un écouteur d'événement sur le bouton de suppression d'un tag
-function bindDeleteTagButton() {
+    // Appelle la fonction handleTags pour gérer la logique des tags
     const tagsContainer = document.getElementById("tags-container");
-    tagsContainer.addEventListener('click', function(event) {
 
-        if (event.target.closest('.tag__erase')) {
+    const newTag = createTagMarkup(itemName, itemType);
+    tagsContainer.insertAdjacentHTML('beforeend', newTag);
 
-            // Si le bouton de suppression d'un tag est cliqué
-            const tagElement = event.target.closest('.tag');
-
-            // Nom du tag à supprimer
-            const tagName = tagElement.textContent.trim();
-
-            // Supprime le tag actif
-            deleteActiveTag(tagName);
-        }
-    });
+    // Ajoute le nouveau tag au tableau activeTags
+    activeTags.push(itemName);
 }
 
 // Fonction pour supprimer un tag actif
-function deleteActiveTag(tagName) {
+function deleteActiveTag(event) {
+
+    // Si le bouton de suppression d'un tag est cliqué
+    const tagElement = event.target.closest('.tag');
+
+    // Nom du tag à supprimer
+    const tagName = tagElement.textContent.trim();
+
     const index = activeTags.indexOf(tagName);
     if (index !== -1) {
         // Supprime le tag du tableau activeTags
@@ -108,26 +50,92 @@ function deleteActiveTag(tagName) {
         }
     });
 
-    // Réactive le clic sur l'élément qui a été désactivé
-    const filterItem = document.querySelector(`.filter-item[data-item="${tagName}"]`);
-  if (filterItem) {
-    filterItem.classList.remove('disabled_item');
-    filterItem.addEventListener('click', clickHandler);
-  }
-
-    // Met à jour les recettes affichées en fonction des tags actifs
-    const query = document.querySelector("#search-bar").value.toLowerCase();
-    updateDisplayedRecipes(query, activeTags);
+    const inputSearch = document.querySelector("#search-bar");
+    updateDisplayedRecipesAndCountSpanAndFilterItems(inputSearch.value.toLowerCase(), activeTags);
 }
 
+
+// Fonction pour attacher les écouteurs d'événements aux éléments filtrables
+// function bindClickFilterItem() {
+//     const filterItems = document.querySelectorAll('.filter-item');
+//     const tagsContainer = document.getElementById("tags-container");
+
+//     // Attache un écouteur d'événement click à chaque élément filtrable
+//     filterItems.forEach((item) => {
+//         item.addEventListener('click', (event) => {
+//             const itemType = event.currentTarget.getAttribute('data-type');
+//             const itemName = event.currentTarget.getAttribute('data-item');
+
+//             // Ajouter le tag
+//             addTag(event);
+
+//             // MàJ la liste des recettes + total + filtres
+//             const inputSearch = document.querySelector("#search-bar");
+//             updateDisplayedRecipesAndCountSpanAndFilterItems(inputSearch.value.toLowerCase(), activeTags);
+
+//             // Vider le champs input
+//             // Bind click suppression tag
+//             bindDeleteTagButton(itemName, itemType)
+//         });
+//     });
+// }
+
+
+function bindClickFilterItem() {
+    const filterItems = document.querySelectorAll('.filter-item');
+
+    filterItems.forEach((item) => {
+        // Attache le nouvel écouteur d'événement
+        item.addEventListener('click', handleFilterItemClick);
+    });
+}
+
+function handleFilterItemClick(event) {
+    const itemType = event.currentTarget.getAttribute('data-type');
+    const itemName = event.currentTarget.getAttribute('data-item');
+
+    // Ajouter le tag
+    addTag(event);
+
+    // MàJ la liste des recettes + total + filtres
+    const inputSearch = document.querySelector("#search-bar");
+    updateDisplayedRecipesAndCountSpanAndFilterItems(inputSearch.value.toLowerCase(), activeTags);
+
+    // Vider le champs input
+    const inputForCurrentType = document.querySelector(`#${itemType}`);
+    if (inputForCurrentType) {
+        inputForCurrentType.value = "";
+    }
+
+    // Bind click suppression tag
+    bindDeleteTagButton(itemName, itemType);
+
+    // // Trouver et fermer la filterBox associée
+    const filterBox = event.target.closest('.filterBox');
+    if (filterBox) {
+        closeFilterBox(filterBox);
+    }
+
+}
+
+
+function bindDeleteTagButton() {
+    const tagsContainer = document.getElementById("tags-container");
+    tagsContainer.addEventListener('click', function (event) {
+        // Si le bouton de suppression d'un tag est cliqué
+        if (event.target.closest('.tag__erase')) {
+            deleteActiveTag(event);
+        }
+    });
+}
 
 
 function updateFilterItems(displayedRecipes) {
     const filterTypes = ['ingredients', 'ustensils', 'appliance'];
-    
+
     filterTypes.forEach(type => {
         const uniqueValues = new Set();
-        
+
         // Crée un ensemble des valeurs uniques pour le type actuel dans les recettes affichées
         displayedRecipes.forEach(recipe => {
             if (type === 'ingredients') {
@@ -142,10 +150,10 @@ function updateFilterItems(displayedRecipes) {
                 uniqueValues.add(recipe.appliance.toLowerCase());
             }
         });
-        
+
         // Trouve le conteneur d'items pour ce type
         const itemListContainer = document.querySelector(`#${type}_filter .items-list`);
-        
+
         // Réinitialise le conteneur d'items
         itemListContainer.innerHTML = '';
 
@@ -212,7 +220,7 @@ function bindInputFiltering() {
             const inputValue = event.target.value;
             const filterBox = event.target.closest('.filterBox');
             const eraseButton = filterBox.querySelector('.search-tag__erase');
-            
+
             // Gérer la visibilité du bouton erase
             if (inputValue.length === 0) {
                 eraseButton.classList.add('hidden');
@@ -247,10 +255,10 @@ function bindEraseButton() {
 
             // Empeche la liste de se fermer lorsqu'on clique sur le bouton pour effacer
             event.stopPropagation();
-            
+
             // Effacer la valeur de l'input
             input.value = '';
-            
+
             // Appeler la fonction filterItemsBasedOnInput pour remettre à jour la liste des items et cacher le bouton erase
             filterItemsBasedOnInput(input);
         });
