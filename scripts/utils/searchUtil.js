@@ -40,7 +40,7 @@ function filterRecipes(query, recipes, activeTags) {
     });
 }
 
-
+// MàJ la liste des recettes, la span total recettes, la liste des items des filtres
 function updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags) {
     let recipesToShow = allRecipes;
 

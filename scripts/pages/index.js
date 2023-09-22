@@ -1,4 +1,4 @@
-const filters = ["ingredients", "ustensils", "appliance"]
+const filters = ["ingredients", "appliance", "ustensils" ]
 
 async function getRecipes() {
     const response = await fetch("../data/recipes.json");

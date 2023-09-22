@@ -1,7 +1,7 @@
 const translations = {
     "ingredients": "Ingrédients",
-    "ustensils": "Ustensiles",
-    "appliance": "Appareil"
+    "appliance": "Appareil",
+    "ustensils": "Ustensiles"
 };
 
 let activeTags = [];
@@ -55,32 +55,6 @@ function deleteActiveTag(event) {
 }
 
 
-// Fonction pour attacher les écouteurs d'événements aux éléments filtrables
-// function bindClickFilterItem() {
-//     const filterItems = document.querySelectorAll('.filter-item');
-//     const tagsContainer = document.getElementById("tags-container");
-
-//     // Attache un écouteur d'événement click à chaque élément filtrable
-//     filterItems.forEach((item) => {
-//         item.addEventListener('click', (event) => {
-//             const itemType = event.currentTarget.getAttribute('data-type');
-//             const itemName = event.currentTarget.getAttribute('data-item');
-
-//             // Ajouter le tag
-//             addTag(event);
-
-//             // MàJ la liste des recettes + total + filtres
-//             const inputSearch = document.querySelector("#search-bar");
-//             updateDisplayedRecipesAndCountSpanAndFilterItems(inputSearch.value.toLowerCase(), activeTags);
-
-//             // Vider le champs input
-//             // Bind click suppression tag
-//             bindDeleteTagButton(itemName, itemType)
-//         });
-//     });
-// }
-
-
 function bindClickFilterItem() {
     const filterItems = document.querySelectorAll('.filter-item');
 
@@ -93,6 +67,7 @@ function bindClickFilterItem() {
 function createTagFromItem(event) {
     const itemType = event.currentTarget.getAttribute('data-type');
     const itemName = event.currentTarget.getAttribute('data-item');
+    const filterBox = event.target.closest('.filterBox');
 
     // Ajouter le tag
     addTag(event);
@@ -111,11 +86,7 @@ function createTagFromItem(event) {
     bindDeleteTagButton(itemName, itemType);
 
     // // Trouver et fermer la filterBox associée
-    const filterBox = event.target.closest('.filterBox');
-    if (filterBox) {
-        closeFilterBox(filterBox);
-    }
-
+    closeFilterBox(filterBox);
 }
 
 
@@ -168,9 +139,7 @@ function updateFilterItems(displayedRecipes) {
 }
 
 
-
-
-// Cette fonction sera utilisée pour filtrer les items affichés en fonction de la recherche
+// Fonction pour rechercher un item à partir de la recherche input
 function filterItemsBasedOnInput(inputElement) {
     const filterBox = inputElement.closest('.filterBox');
     const eraseButton = filterBox.querySelector('.search-tag__erase');
@@ -244,7 +213,7 @@ function bindInputFiltering() {
 }
 
 
-
+// Fonction ajoute les écouteurs d'événements aux boutons delete
 function bindEraseButton() {
     const eraseButtons = document.querySelectorAll('.search-tag__erase');
 
