@@ -1,4 +1,4 @@
-const filters = ["ingredients", "ustensils", "appliance"]
+const filters = ["ingredients", "appliance", "ustensils" ]
 
 async function getRecipes() {
     const response = await fetch("../data/recipes.json");
@@ -7,8 +7,11 @@ async function getRecipes() {
     return recipes;
 }
 
+
 function init() {
+    // Appel de la fonction getRecipes pour obtenir des recettes
     getRecipes()
+        // Traitement lorsque la promesse est résolue
         .then((recipes) => {
             displayRecipes(recipes);
 
@@ -17,20 +20,30 @@ function init() {
             const ingredientList = tagFilters.filteredIngredients();
             const applianceList = tagFilters.filteredAppliance();
             const utensilList = tagFilters.filteredUstensils();
-            filters.forEach(filter => {
+
+            // Boucle pour afficher les filtres sur la base des listes filtrées
+            for (let i = 0; i < filters.length; i++) {
+                const filter = filters[i];
 
                 if (filter === "ingredients") {
-                    displayFilter(filter, ingredientList)
+                    displayFilter(filter, ingredientList);
                 } else if (filter === "appliance") {
-                    displayFilter(filter, applianceList)
+                    displayFilter(filter, applianceList);
                 } else if (filter === "ustensils") {
-                    displayFilter(filter, utensilList)
+                    displayFilter(filter, utensilList);
                 }
-            })
-            
-            toggleFilter();
+            }
+
+            const filterBoxes = document.querySelectorAll('.filterBox');
+            for (let i = 0; i < filterBoxes.length; i++) {
+                filterBoxes[i].addEventListener('click', filterBoxClickHandler);
+            }
+
             bindClickFilterItem();
+            bindInputFiltering();
+            bindEraseButton();
         })
 }
+
 
 init();

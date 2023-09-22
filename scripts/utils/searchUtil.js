@@ -1,95 +1,79 @@
-function filterRecipes(query, tags, recipes) {
+const inputSearch = document.querySelector("#search-bar");
+inputSearch.addEventListener('input', handleSearchInput);
+const eraseButtons = document.querySelector("#eraseButton");
+eraseButtons.addEventListener('click', clearInput);
 
-    let recipesFromSearchBar =  [];
-    query = query.toLowerCase();
 
-    for (let i = 0; i < recipes.length; i++) {
-        if(recipes[i].name.toLowerCase().includes(query) || 
-        recipes[i].description.toLowerCase().includes(query) ||
-        recipes[i].appliance.toLowerCase().includes(query)) {
-            if(!recipesFromSearchBar.includes(recipes[i])) {
-
-                recipesFromSearchBar.push(recipes[i])
-            }
-        }
-
-        for (let j = 0; j < recipes[i].ingredients.length; j++) {
-            if(recipes[i].ingredients[j].ingredient.toLowerCase().includes(query)) {
-                if(!recipesFromSearchBar.includes(recipes[i])) {
-                    recipesFromSearchBar.push(recipes[i])
-                }
-            }
-        }
-
-        for (let k = 0; k < recipes[i].ustensils.length; k++) {
-            if(recipes[i].ustensils[k].toLowerCase().includes(query)) {
-                if(!recipesFromSearchBar.includes(recipes[i])) {
-                    recipesFromSearchBar.push(recipes[i])
-                }
-            }
-        }
+// Fonction qui permet d'effectuer une recherche
+function handleSearchInput(event) {
+    const query = event.target.value.toLowerCase();
+    
+    const eraseButton = document.querySelector('#eraseButton');
+    eraseButton.classList.toggle('hidden', query.length === 0);
+    
+    if (query.length >= 3 || activeTags.length > 0) {
+        updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags);
+    } else {
+        updateDisplayedRecipesAndCountSpanAndFilterItems('', []);
     }
-    
-    return tags.length > 0 ? filterByTags(recipesFromSearchBar, tags) : recipesFromSearchBar;
 }
 
-// Filtre une liste de recettes en fonction des tags fournis
-function filterByTags(recipes, tags) {
+
+// Fonction pour filtrer les recettes selon la requête de l'utilisateur et/ou les tags appliqués
+function filterRecipes(query, recipes, activeTags) {
     return recipes.filter(recipe => {
-        return tags.every(tag => {
-            // Si le tag est de type "ingrédients" et que la recette n'a pas cet ingrédient, 
-            // retourne false (exclut la recette)
-            if (tag.type === "ingredients") {
-                return recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase() === tag.name.toLowerCase());
+        const propertiesToCheck = ['name', 'description', 'appliance'];
+        let matchesQuery = false;
+        let matchesTags = true;
+
+        for (let prop of propertiesToCheck) {
+            if (recipe[prop].toLowerCase().includes(query)) {
+                matchesQuery = true;
+                break;
             }
-            if (tag.type === "ustensils") {
-                return recipe.ustensils.some(utensil => utensil.toLowerCase() === tag.name.toLowerCase());
+        }
+
+        if (!matchesQuery) {
+            matchesQuery = recipe.ustensils.some(utensil => utensil.toLowerCase().includes(query)) ||
+                recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(query));
+        }
+
+        for (let tag of activeTags) {
+            let tagMatches = propertiesToCheck.some(prop => recipe[prop].includes(tag)) ||
+                recipe.ustensils.includes(tag) ||
+                recipe.ingredients.some(ingredient => ingredient.ingredient.includes(tag));
+
+            if (!tagMatches) {
+                matchesTags = false;
+                break;
             }
-            if (tag.type === "appliance") {
-                return recipe.appliance.toLowerCase() === tag.name.toLowerCase();
-            }
-            return false;
-        });
+        }
+
+        return matchesQuery && matchesTags;
     });
 }
 
 
-//MàJ de la span qui affiche le nombre des recettes en fonction du nombre donné
-function updateFilterItemsVisibility(displayedRecipes) {
-    const filterTypes = ['ingredients', 'ustensils', 'appliance'];
+// MàJ la liste des recettes, la span total recettes, la liste des items des filtres
+function updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags) {
+    let recipesToShow = allRecipes;
+
+    recipesToShow = filterRecipes(query, recipesToShow, activeTags);
+
+    updateRecipesDisplay(recipesToShow);
+    updateRecipeCountSpan(recipesToShow.length);
+    updateFilterItems(recipesToShow);
+}
+
+
+// Fonction pour effacer la valeur de l'input
+function clearInput() {
+    const inputField = document.querySelector('#search-bar');
     
-    filterTypes.forEach(type => {
-        // Récupére tous les items du type actuel
-        const items = document.querySelectorAll(`.filter-item[data-type="${type}"]`);
-        
-        // Crée un ensemble des valeurs uniques pour le type actuel dans les recettes affichées
-        const uniqueValues = new Set();
-        
-        displayedRecipes.forEach(recipe => {
-            if (type === 'ingredients') {
-                recipe.ingredients.forEach(ingredient => {
-                    uniqueValues.add(ingredient.ingredient.toLowerCase());
-                });
+    // Réinitialise la valeur de la barre de recherche
+    inputField.value = '';
 
-            } else if (type === 'ustensils') {
-                recipe.ustensils.forEach(utensil => {
-                    uniqueValues.add(utensil.toLowerCase());
-                });
-
-            } else if (type === 'appliance') {
-                uniqueValues.add(recipe.appliance.toLowerCase());
-            }
-        });
-
-        // Cache ou affiche chaque item selon s'il apparaît dans les recettes affichées
-        items.forEach(item => {
-            const itemValue = item.getAttribute('data-item').toLowerCase();
-            if (uniqueValues.has(itemValue)) {
-                item.classList.remove("hidden_item");
-            } else {
-                item.classList.add("hidden_item");
-            }
-        });
-    });
+    // Appel à handleSearchInput pour mettre à jour l'affichage des recettes
+    updateDisplayedRecipesAndCountSpanAndFilterItems('', activeTags);
+    inputField.focus();
 }
-

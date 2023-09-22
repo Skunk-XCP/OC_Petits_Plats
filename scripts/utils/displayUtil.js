@@ -26,6 +26,7 @@ function updateRecipesDisplay(recipes) {
         // Vide le conteneur des recettes
         recipesContainer.innerHTML = '';
 
+        // Si la valeur est inconnue => message approprié
         if (recipes.length === 0) {
             const noResultsMessage = document.createElement('p');
             noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
@@ -54,10 +55,6 @@ async function displayFilter(type, itemList) {
     const filterHTML = filter(type, itemList);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
-
-    deleteInputTagFilter(type);
-    handleFilterTagsInput(type);
-    filterItemsByValue(type);
 }
 
 
