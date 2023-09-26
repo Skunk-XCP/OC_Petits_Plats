@@ -77,6 +77,10 @@
     color: lightgray;
 }
 
+.filter-item.hidden {
+    display: none;
+}
+
 .hidden {
     display: none;
 }
@@ -241,6 +245,7 @@ main {
     margin-right: 67px;
     border-radius: 10px;
     background-color: white;
+    cursor: pointer;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -251,11 +256,10 @@ main {
 
 .toggle {
     font-size: 1.2rem;
-    background-color: transparent;
-    border: none;
-    outline: none;
     cursor: pointer;
     padding: 10px 0 5px 0px;
+    font-family: var(--font-family-main);
+
 }
 
 

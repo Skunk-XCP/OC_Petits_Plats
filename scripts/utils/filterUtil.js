@@ -67,7 +67,6 @@ function bindClickFilterItem() {
 function createTagFromItem(event) {
     const itemType = event.currentTarget.getAttribute('data-type');
     const itemName = event.currentTarget.getAttribute('data-item');
-    const filterBox = event.target.closest('.filterBox');
 
     // Ajouter le tag
     addTag(event);
@@ -84,9 +83,6 @@ function createTagFromItem(event) {
 
     // Bind click suppression tag
     bindDeleteTagButton(itemName, itemType);
-
-    // // Trouver et fermer la filterBox associée
-    closeFilterBox(filterBox);
 }
 
 
@@ -163,9 +159,9 @@ function filterItemsBasedOnInput(inputElement) {
         const itemValue = item.getAttribute('data-item');
 
         if (compareWithoutAccents(itemValue, inputValue)) {
-            item.style.display = '';
+            item.classList.remove('hidden');
         } else {
-            item.style.display = 'none';
+            item.classList.add('hidden');
         }
     });
 }
@@ -205,7 +201,7 @@ function bindInputFiltering() {
                 const allItems = Array.from(itemList.querySelectorAll('.filter-item'));
 
                 allItems.forEach(item => {
-                    item.style.display = '';
+                    item.classList.remove('hidden');
                 });
             }
         });
