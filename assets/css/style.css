@@ -294,6 +294,10 @@ main {
     background-color: #FFD15B;
 }
 
+.filter-item.hidden {
+    display: none;
+}
+
 .hidden_item {
     display: none;
 }

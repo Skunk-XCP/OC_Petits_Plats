@@ -67,7 +67,6 @@ function bindClickFilterItem() {
 function createTagFromItem(event) {
     const itemType = event.currentTarget.getAttribute('data-type');
     const itemName = event.currentTarget.getAttribute('data-item');
-    const filterBox = event.target.closest('.filterBox');
 
     // Ajouter le tag
     addTag(event);
@@ -84,9 +83,6 @@ function createTagFromItem(event) {
 
     // Bind click suppression tag
     bindDeleteTagButton(itemName, itemType);
-
-    // // Trouver et fermer la filterBox associée
-    closeFilterBox(filterBox);
 }
 
 
@@ -104,29 +100,23 @@ function bindDeleteTagButton() {
 function updateFilterItems(displayedRecipes) {
     const filterTypes = ['ingredients', 'ustensils', 'appliance'];
 
-    for (let i = 0; i < filterTypes.length; i++) {
-        const type = filterTypes[i];
+    filterTypes.forEach(type => {
         const uniqueValues = new Set();
 
-        for (let j = 0; j < displayedRecipes.length; j++) {
-            const recipe = displayedRecipes[j];
-
-            switch (type) {
-                case 'ingredients':
-                    for (let k = 0; k < recipe.ingredients.length; k++) {
-                        uniqueValues.add(recipe.ingredients[k].ingredient.toLowerCase());
-                    }
-                    break;
-                case 'ustensils':
-                    for (let k = 0; k < recipe.ustensils.length; k++) {
-                        uniqueValues.add(recipe.ustensils[k].toLowerCase());
-                    }
-                    break;
-                case 'appliance':
-                    uniqueValues.add(recipe.appliance.toLowerCase());
-                    break;
+        // Crée un ensemble des valeurs uniques pour le type actuel dans les recettes affichées
+        displayedRecipes.forEach(recipe => {
+            if (type === 'ingredients') {
+                recipe.ingredients.forEach(ingredient => {
+                    uniqueValues.add(ingredient.ingredient.toLowerCase());
+                });
+            } else if (type === 'ustensils') {
+                recipe.ustensils.forEach(utensil => {
+                    uniqueValues.add(utensil.toLowerCase());
+                });
+            } else if (type === 'appliance') {
+                uniqueValues.add(recipe.appliance.toLowerCase());
             }
-        }
+        });
 
         // Trouve le conteneur d'items pour ce type
         const itemListContainer = document.querySelector(`#${type}_filter .items-list`);
@@ -134,15 +124,15 @@ function updateFilterItems(displayedRecipes) {
         // Réinitialise le conteneur d'items
         itemListContainer.innerHTML = '';
 
-        for (let value of uniqueValues) {
+        // Recrée la liste d'items basée sur les valeurs uniques trouvées
+        uniqueValues.forEach(value => {
             const itemHTML = `<a class="filter-item" data-type="${type}" data-item="${value}">${value}</a>`;
             itemListContainer.insertAdjacentHTML('beforeend', itemHTML);
-        }
+        });
 
         bindClickFilterItem();
-    }
+    });
 }
-
 
 
 // Fonction pour rechercher un item à partir de la recherche input
@@ -165,16 +155,15 @@ function filterItemsBasedOnInput(inputElement) {
     }
 
     // Masquer ou afficher chaque item en fonction de la correspondance avec la valeur de l'input
-    for (let i = 0; i < allItems.length; i++) {
-        const item = allItems[i];
+    allItems.forEach(item => {
         const itemValue = item.getAttribute('data-item');
 
         if (compareWithoutAccents(itemValue, inputValue)) {
-            item.style.display = '';
+            item.classList.remove('hidden');
         } else {
-            item.style.display = 'none';
+            item.classList.add('hidden');
         }
-    }
+    });
 }
 
 
@@ -213,7 +202,7 @@ function bindInputFiltering() {
                 const allItems = Array.from(itemList.querySelectorAll('.filter-item'));
 
                 allItems.forEach(item => {
-                    item.style.display = '';
+                    item.classList.remove('hidden');
                 });
             }
         });
@@ -222,11 +211,11 @@ function bindInputFiltering() {
 
 
 // Fonction ajoute les écouteurs d'événements aux boutons delete
-function bindEraseButton() {
+function bindEraseButtonFilterInput() {
     const eraseButtons = document.querySelectorAll('.search-tag__erase');
 
-    for (let i = 0; i < eraseButtons.length; i++) {
-        eraseButtons[i].addEventListener('click', (event) => {
+    eraseButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
             const filterBox = event.target.closest('.filterBox');
             const input = filterBox.querySelector('.searchBar_filter');
 
@@ -239,5 +228,5 @@ function bindEraseButton() {
             // Appeler la fonction filterItemsBasedOnInput pour remettre à jour la liste des items et cacher le bouton erase
             filterItemsBasedOnInput(input);
         });
-    }
+    });
 }

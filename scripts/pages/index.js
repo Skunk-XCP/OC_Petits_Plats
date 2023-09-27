@@ -22,22 +22,21 @@ function init() {
             const utensilList = tagFilters.filteredUstensils();
 
             // Boucle pour afficher les filtres sur la base des listes filtrées
-            for (let i = 0; i < filters.length; i++) {
-                const filter = filters[i];
+            filters.forEach(filter => {
 
                 if (filter === "ingredients") {
-                    displayFilter(filter, ingredientList);
+                    displayFilter(filter, ingredientList)
                 } else if (filter === "appliance") {
-                    displayFilter(filter, applianceList);
+                    displayFilter(filter, applianceList)
                 } else if (filter === "ustensils") {
-                    displayFilter(filter, utensilList);
+                    displayFilter(filter, utensilList)
                 }
-            }
+            })
 
             const filterBoxes = document.querySelectorAll('.filterBox');
-            for (let i = 0; i < filterBoxes.length; i++) {
-                filterBoxes[i].addEventListener('click', filterBoxClickHandler);
-            }
+            filterBoxes.forEach(filterBox => {
+                filterBox.addEventListener('click', filterBoxClickHandler);
+            });
 
             bindClickFilterItem();
             bindInputFiltering();
