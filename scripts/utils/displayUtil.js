@@ -52,7 +52,7 @@ function updateRecipesDisplay(recipes) {
 
 // Affiche les boutons de filtre
 async function displayFilter(type, itemList) {
-    const filterHTML = genenerateFilterHTML(type, itemList);
+    const filterHTML = generateFilterHTML(type, itemList);
     const target = document.getElementById("filters-container");
     target.insertAdjacentHTML('beforeend', filterHTML);
 }
@@ -91,7 +91,7 @@ function updateRecipeCountSpan(count) {
 }
 
 
-function genenerateFilterHTML(type, items) {
+function generateFilterHTML(type, items) {
     const translatedType = translations[type] || type;
     const listItems = items.map(item => `<a class="filter-item" data-type="${type}" data-item="${item}">${item} </a>`).join('');
 
