@@ -211,7 +211,7 @@ function bindInputFiltering() {
 
 
 // Fonction ajoute les écouteurs d'événements aux boutons delete
-function bindEraseButtonFilterInput() {
+function bindEraseButton() {
     const eraseButtons = document.querySelectorAll('.search-tag__erase');
 
     eraseButtons.forEach(button => {
