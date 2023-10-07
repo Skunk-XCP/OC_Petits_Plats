@@ -7,10 +7,10 @@ eraseButtons.addEventListener('click', clearInput);
 // Fonction qui permet d'effectuer une recherche
 function handleSearchInput(event) {
     const query = event.target.value.toLowerCase();
-    
+
     const eraseButton = document.querySelector('#eraseButton');
     eraseButton.classList.toggle('hidden', query.length === 0);
-    
+
     if (query.length >= 3 || activeTags.length > 0) {
         updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags);
     } else {
@@ -56,11 +56,9 @@ function filterRecipes(query, recipes, activeTags) {
 
 // MàJ la liste des recettes, la span total recettes, la liste des items des filtres
 function updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags) {
-    let recipesToShow = allRecipes;
+    const recipesToShow = filterRecipes(query, allRecipes, activeTags);
 
-    recipesToShow = filterRecipes(query, recipesToShow, activeTags);
-
-    updateRecipesDisplay(recipesToShow);
+    displayRecipes(allRecipes, query, activeTags);
     updateRecipeCountSpan(recipesToShow.length);
     updateFilterItems(recipesToShow);
 }
@@ -69,9 +67,12 @@ function updateDisplayedRecipesAndCountSpanAndFilterItems(query, activeTags) {
 // Fonction pour effacer la valeur de l'input
 function clearInput() {
     const inputField = document.querySelector('#search-bar');
-    
+
     // Réinitialise la valeur de la barre de recherche
     inputField.value = '';
+
+    // Déclenche manuellement l'événement 'input'
+    inputField.dispatchEvent(new Event('input'));
 
     // Appel à handleSearchInput pour mettre à jour l'affichage des recettes
     updateDisplayedRecipesAndCountSpanAndFilterItems('', activeTags);

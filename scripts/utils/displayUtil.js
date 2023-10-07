@@ -8,46 +8,39 @@ function createRecipeElement(recipe) {
     return doc.querySelector('.recipe_article');
 }
 
-async function displayRecipes(recipesData) {
-    // Convertit les données des recettes en objets recette
-    allRecipes = recipesData.map(recipeData =>
-        new Recipe(recipeData.id, recipeData.image, recipeData.name, recipeData.servings, recipeData.ingredients, recipeData.time, recipeData.description, recipeData.appliance, recipeData.ustensils)
-    );
+let allRecipes = [];
 
-    updateRecipesDisplay(allRecipes);
-    updateRecipeCountSpan(allRecipes.length);
-}
-
-// Met à jour l'affichage des recettes sur la page
-function updateRecipesDisplay(recipes) {
-    try {
-        // Sélectionne le conteneur des recettes
-        const recipesContainer = document.getElementById('recipes-container');
-        // Vide le conteneur des recettes
-        recipesContainer.innerHTML = '';
-
-        // Si la valeur est inconnue => message approprié
-        if (recipes.length === 0) {
-            const noResultsMessage = document.createElement('p');
-            noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
-            recipesContainer.appendChild(noResultsMessage);
-
-            // Ajoute la classe CSS pour le mode "Aucun résultat"
-            recipesContainer.classList.add('no-results');
-        } else {
-            // Si des recettes sont trouvées, retire la classe CSS pour le mode "Aucun résultat"
-            recipesContainer.classList.remove('no-results');
-
-            for (const recipe of recipes) {
-                const recipeElement = createRecipeElement(recipe);
-                recipesContainer.appendChild(recipeElement);
-            }
-        }
-    } 
-    
-    catch (error) {
-        console.error("Erreur lors de la mise à jour de l'affichage des recettes:", error);
+function displayRecipes(recipesData, query = '', activeTags = []) {
+    // Si allRecipes est vide, c'est la première initialisation
+    if (!allRecipes.length) {
+        allRecipes = recipesData.map(recipeData =>
+            new Recipe(recipeData.id, recipeData.image, recipeData.name, recipeData.servings, recipeData.ingredients, recipeData.time, recipeData.description, recipeData.appliance, recipeData.ustensils)
+        );
     }
+
+    let recipesToShow = allRecipes;
+
+    if (query || activeTags.length > 0) {
+        recipesToShow = filterRecipes(query, allRecipes, activeTags);
+    }
+
+    const recipesContainer = document.getElementById('recipes-container');
+    recipesContainer.innerHTML = '';
+
+    if (recipesToShow.length === 0) {
+        const noResultsMessage = document.createElement('p');
+        noResultsMessage.textContent = `Aucune recette ne contient ‘${inputSearch.value}’ vous pouvez chercher "tarte aux pommes", "poisson ", etc.`;
+        recipesContainer.appendChild(noResultsMessage);
+        recipesContainer.classList.add('no-results');
+    } else {
+        recipesContainer.classList.remove('no-results');
+        for (const recipe of recipesToShow) {
+            const recipeElement = createRecipeElement(recipe);
+            recipesContainer.appendChild(recipeElement);
+        }
+    }
+
+    updateRecipeCountSpan(recipesToShow.length);
 }
 
 // Affiche les boutons de filtre
